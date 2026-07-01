@@ -49,14 +49,24 @@ git-scm.com,Git SCM Doc
 gitlab.com,GitLab Core
 docker.com,Docker Web
 docker.io,Docker Registry Hub
+gcr.io,Google Container Registry
+quay.io,RedHat Container Registry
 crates.io,Rust Crates Registry
 rust-lang.org,Rust Language Official
 golang.org,Go Language Official
-npmjs.com,NPM Registry
+go.dev,Go Language Portal
 pypi.org,PyPI Python Registry
+python.org,Python Official
 v2ex.com,V2EX Community
 stackoverflow.com,StackOverflow
+npmjs.com,NPM Registry
 npmjs.org,NPM Official
+
+# ---- 前端开发与基建（解决 Zed/Neovim LSP 插件加载卡顿） ----
+deno.land,Deno Registry
+esm.sh,ESM Modules CDN
+skypack.dev,Skypack Frontend CDN
+hub.docker.com,Docker Hub Web
 
 # ---- 常用效率工具与云服务 ----
 notion.so,Notion Workspace
@@ -85,6 +95,7 @@ steamusercontent.com,Steam User Images
 # ---- 国内平台常引用的境外公共资源 ----
 unpkg.com,Unpkg NPM CDN
 jsdelivr.net,jsDelivr OpenSource CDN
+cdnjs.cloudflare.com,Cloudflare cdnjs Static Assets
 
 # ---- Cloudflare 官方基础设施与控制台 ----
 cloudflare.com,Cloudflare Core
@@ -92,18 +103,65 @@ cloudflareclient.com,Cloudflare WARP Client API
 cloudflareinsights.com,Cloudflare Web Analytics
 cloudflare-gateway.com,Cloudflare Zero Trust Gateway
 
-# ---- 开发者工具与公共 CDN 加速（强烈推荐） ----
+# ---- 开发者工具与公共 CDN 加速 ----
 workers.dev,Cloudflare Workers Domain
 pages.dev,Cloudflare Pages Domain
-cdnjs.cloudflare.com,Cloudflare cdnjs Static Assets
 
-# ---- Vultr 云服务器平台 ----
+# ---- VPS 与主流云基础设施（针对 DevOps 调优） ----
 vultr.com,Vultr Official Web
 vultr-content.com,Vultr Console Assets
+digitalocean.com,DigitalOcean VPS
+linode.com,Linode Akamai Cloud
+aws.amazon.com,Amazon AWS Core
+amazon.com,Amazon Core
 
-# ---- 技术社区与主机论坛（新增） ----
+# ---- 技术社区与主机论坛 ----
 linux.do,Linux Do Community
 nodeseek.com,NodeSeek Forum
 idcflare.com,IDCFlare Web
 nodeimage.com,NodeImage Mirror Storage
 deepflood.com,DeepFlood Net
+
+# ---- 顶级大模型社区与开源 AI 权重平台 ----
+huggingface.co,Hugging Face Community
+hf.co,Hugging Face Short URL
+civitai.com,Civitai AI Models (C站)
+replicate.com,Replicate Cloud AI Run
+groq.com,Groq AI Inference
+deepseek.com,DeepSeek AI Core
+together.xyz,Together AI Cloud
+cohere.com,Cohere AI Core
+perplexities.co,Perplexity AI Search
+perplexity.ai,Perplexity AI Search
+
+# ---- AI 开发者工具与周边生态 ----
+pinecone.io,Pinecone Vector DB
+supabase.com,Supabase OpenSource DB (AI Hub)
+langchain.com,LangChain Framework
+wandb.ai,Weights & Biases (MLOps)
+
+# ---- 高清壁纸、图库与艺术设计资源 ----
+wallhaven.cc,Wallhaven Wallpaper Hub
+w.wallhaven.cc,Wallhaven Image CDN
+unsplash.com,Unsplash High-Res Photos
+images.unsplash.com,Unsplash Image CDN
+pexels.com,Pexels Stock Photos
+pixabay.com,Pixabay Creative Images
+artstation.com,ArtStation Portfolio Hub
+konachan.com,Konachan Anime Wallpapers
+yande.re,Yande.re Anime Wallpapers
+alphacoders.com,Wallpaper AlphaCoders
+
+# ---- 境外主流流媒体与成人内容加速 ----
+pornhub.com,Pornhub Stream Web
+phncdn.com,Pornhub Video CDN Assets
+xvideos.com,XVideos Stream Web
+xvideos-cdn.com,XVideos Video CDN Assets
+xnxx.com,XNXX Stream Web
+xnxx-cdn.com,XNXX Video CDN Assets
+xhamster.com,xHamster Stream Web
+xhcdn.com,xHamster Video CDN Assets
+jable.tv,Jable TV Stream Web
+missav.com,MissAV Stream Web
+stripchat.com,Stripchat Live Stream
+chaturbate.com,Chaturbate Live Stream
