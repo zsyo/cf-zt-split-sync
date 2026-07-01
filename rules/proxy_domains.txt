@@ -27,9 +27,14 @@ instagram.com,Instagram
 facebook.com,Facebook
 meta.com,Meta Core
 telegram.org,Telegram Core
+telegram.me,Telegram Alternative Link
 t.me,Telegram Link Share
 discord.com,Discord Core
+discord.gg,Discord Invite Link
 discordapp.com,Discord Assets
+discordapp.net,Discord Static Assets
+discordcdn.com,Discord CDN Assets
+prod.website-files.com,Discord Website File
 twitch.tv,Twitch Stream
 medium.com,Medium Blog
 wikipedia.org,Wikipedia
@@ -133,6 +138,9 @@ together.xyz,Together AI Cloud
 cohere.com,Cohere AI Core
 perplexities.co,Perplexity AI Search
 perplexity.ai,Perplexity AI Search
+oaistatic.com,OpenAI Static Assets
+oaiusercontent.com,OpenAI User Uploads
+sentry.io,AI Infrastructure Error Tracking
 
 # ---- AI 开发者工具与周边生态 ----
 pinecone.io,Pinecone Vector DB
@@ -151,10 +159,25 @@ artstation.com,ArtStation Portfolio Hub
 konachan.com,Konachan Anime Wallpapers
 yande.re,Yande.re Anime Wallpapers
 alphacoders.com,Wallpaper AlphaCoders
+artfile.me,ArtStation CDN Assets
+
+# ---- NVIDIA 国际版官方基础设施与驱动分发 ----
+nvidia.com,NVIDIA Official Core
+geforcenow.com,NVIDIA GeForce Now Cloud Gaming
+nvidiagrid.net,NVIDIA Cloud Infrastructure
+nvidia.com.edgekey.net,NVIDIA Akamai Edge CDN
+
+# ---- 境外公网 IP / 路由出站探测工具（检测 WARP 出口状态） ----
+ip.sb,IP.SB Speed Test & IP Lookup
+ipinfo.io,IPinfo GeoIP Lookup API
+icanhazip.com,icanhazip Clean IP Plaintext
+ifconfig.me,ifconfig.me Terminal IP Lookup
+ipapi.co,ipapi.co GeoIP Context API
+ident.me,ident.me Ultralight IP Plaintext
 
 # ---- 境外主流流媒体与成人内容加速 ----
 pornhub.com,Pornhub Stream Web
-phncdn.com,Pornhub Video CDN Assets
+# phncdn.com,Pornhub Video CDN Assets
 xvideos.com,XVideos Stream Web
 xvideos-cdn.com,XVideos Video CDN Assets
 xnxx.com,XNXX Stream Web
