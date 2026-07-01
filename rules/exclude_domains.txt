@@ -28,12 +28,15 @@ gitee.com,Gitee Code
 csdn.net,CSDN Technology
 juejin.cn,Juejin Developer
 oschina.net,OSChina OpenSource
-v2ex.com,V2EX Community (Optional CN)
+rsproxy.cn,RSProxy Mirror
 aliyun.com,Alibaba Cloud
 tsinghua.edu.cn,Tsinghua Mirror
 ustc.edu.cn,USTC Mirror
+edu.cn,Education Website
+gov.cn,Government Website
 
 # ---- 手机厂商系统基础设施与推送服务（防止系统OTA及推送断连） ----
+mi.com,Mi Ecosystem
 xiaomi.com,Xiaomi Ecosystem
 mi-img.com,Xiaomi Static
 miui.com,Xiaomi MIUI System
