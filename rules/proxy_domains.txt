@@ -83,6 +83,27 @@ steamstatic.com,Steam Static Content
 steamusercontent.com,Steam User Images
 
 # ---- 国内平台常引用的境外公共资源 ----
-cdnjs.cloudflare.com,Cloudflare Public Assets
 unpkg.com,Unpkg NPM CDN
 jsdelivr.net,jsDelivr OpenSource CDN
+
+# ---- Cloudflare 官方基础设施与控制台 ----
+cloudflare.com,Cloudflare Core
+cloudflareclient.com,Cloudflare WARP Client API
+cloudflareinsights.com,Cloudflare Web Analytics
+cloudflare-gateway.com,Cloudflare Zero Trust Gateway
+
+# ---- 开发者工具与公共 CDN 加速（强烈推荐） ----
+workers.dev,Cloudflare Workers Domain
+pages.dev,Cloudflare Pages Domain
+cdnjs.cloudflare.com,Cloudflare cdnjs Static Assets
+
+# ---- Vultr 云服务器平台 ----
+vultr.com,Vultr Official Web
+vultr-content.com,Vultr Console Assets
+
+# ---- 技术社区与主机论坛（新增） ----
+linux.do,Linux Do Community
+nodeseek.com,NodeSeek Forum
+idcflare.com,IDCFlare Web
+nodeimage.com,NodeImage Mirror Storage
+deepflood.com,DeepFlood Net
