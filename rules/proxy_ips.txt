@@ -39,3 +39,19 @@
 192.173.64.0/18,Netflix Open Connect
 198.38.96.0/19,Netflix Open Connect
 198.45.48.0/20,Netflix Open Connect
+
+# ---- Telegram 官方核心 IPv6 网段 ----
+2001:b28:f23d::/48,Telegram IPv6 DC
+2001:b28:f23f::/48,Telegram IPv6 DC
+2a0a:f280::/32,Telegram IPv6 DC
+
+# ---- GitHub 核心基础设施 IPv6 网段 ----
+2a01:5c0::/32,GitHub IPv6 Network
+2606:50c0::/32,GitHub Pages IPv6
+
+# ---- OpenAI / ChatGPT 核心边缘网络 IPv6 网段 ----
+2606:4700::/32,OpenAI CF Edge IPv6
+
+# ---- Netflix 官方骨干网 IPv6 网段 ----
+2a00:86c0::/32,Netflix Open Connect IPv6
+2607:fb10::/32,Netflix Open Connect IPv6

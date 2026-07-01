@@ -76,3 +76,13 @@ disneyplus.com,Disney Plus
 spotify.com,Spotify Music
 steamcommunity.com,Steam Community
 steampowered.com,Steam Store
+
+# ---- 游戏社区配套境外服务（小黑盒/Steam 数据交互） ----
+steam-chat.com,Steam Chat Service
+steamstatic.com,Steam Static Content
+steamusercontent.com,Steam User Images
+
+# ---- 国内平台常引用的境外公共资源 ----
+cdnjs.cloudflare.com,Cloudflare Public Assets
+unpkg.com,Unpkg NPM CDN
+jsdelivr.net,jsDelivr OpenSource CDN

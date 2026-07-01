@@ -1,16 +1,19 @@
-10.0.0.0/8
-100.64.0.0/10
-169.254.0.0/16,DHCP Unspecified
-172.16.0.0/12
-192.0.0.0/24
-192.168.0.0/16
-224.0.0.0/24
-240.0.0.0/4
-255.255.255.255/32,DHCP Broadcast
-fe80::/10,IPv6 Link Local
-fd00::/8
-ff01::/16
-ff02::/16
-ff03::/16
-ff04::/16
-ff05::/16
+# =========================================================
+# RFC 1918 规定的私有局域网 IP 段及特殊网段
+# =========================================================
+
+# ---- 标准局域网 C 类/B 类/A 类私有网段 ----
+192.168.0.0/16,LAN Private C-Class (Router/NAS)
+172.16.0.0/12,LAN Private B-Class (Docker/WSL)
+10.0.0.0/8,LAN Private A-Class (Enterprise/VPN)
+
+# ---- 本地回环与特殊网段 ----
+127.0.0.0/8,Local Loopback (localhost)
+169.254.0.0/16,Link-Local (DHCP Failure Auto-IP)
+224.0.0.0/4,Multicast (局域网组播/设备发现)
+
+# ---- IPv6 本地特殊与私有网段 ----
+::1/128,IPv6 Loopback (localhost)
+fe80::/10,IPv6 Link-Local (局域网邻居发现)
+fc00::/7,IPv6 Unique Local (私有局域网 ULA)
+ff00::/8,IPv6 Multicast (局域网组播)

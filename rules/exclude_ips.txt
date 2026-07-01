@@ -1,0 +1,45 @@
+# =========================================================
+# 国内大厂核心公网基础设施与公共 DNS IP 段 (CIDR)
+# =========================================================
+
+# ---- 国内公共 DNS（防 DNS 污染与解析直连） ----
+114.114.114.114/32,114 DNS
+114.114.115.115/32,114 DNS
+223.5.5.5/32,Ali DNS
+223.6.6.6/32,Ali DNS
+180.76.76.76/32,Baidu DNS
+119.29.29.29/32,Tencent DNS
+
+# ---- 阿里云 / 支付宝核心公网网段 ----
+140.205.0.0/16,Alibaba Core Network
+106.11.0.0/16,Alibaba Core Network
+47.92.0.0/14,Aliyun Region IP
+
+# ---- 腾讯云 / 微信 / QQ 核心公网网段 ----
+101.226.0.0/16,Tencent Core Network
+140.206.0.0/16,Tencent Core Network
+182.254.0.0/16,Tencent Cloud Region
+
+# ---- 百度核心公网网段 ----
+180.97.0.0/16,Baidu Core Network
+220.181.0.0/16,Baidu Core Network
+111.206.0.0/16,Baidu Core Network
+
+# ---- 字节跳动 / 抖音 / 头条核心公网网段 ----
+110.249.0.0/16,ByteDance Edge Network
+111.62.0.0/15,ByteDance Edge Network
+
+# ---- 华为云核心公网网段 ----
+119.3.0.0/16,Huawei Cloud
+49.4.0.0/16,Huawei Cloud
+
+# ---- 国内公共 IPv6 DNS（防止 DNS 污染） ----
+2400:3200::1/128,Ali DNS IPv6
+2400:3200:baba::1/128,Ali DNS IPv6
+2402:4e00::/128,Tencent DNS IPv6
+240c::6666/128,Baidu DNS IPv6
+
+# ---- 中国三大运营商 IPv6 骨干网大段 ----
+240e::/18,China Telecom IPv6
+2408:8000::/20,China Unicom IPv6
+2409:8000::/20,China Mobile IPv6

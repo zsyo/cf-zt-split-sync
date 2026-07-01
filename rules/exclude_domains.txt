@@ -1,0 +1,75 @@
+# ---- 国内核心搜索引擎与大厂门户 ----
+baidu.com,Baidu Core
+bdstatic.com,Baidu Static
+qq.com,Tencent QQ
+tencent.com,Tencent Group
+alibaba.com,Alibaba Group
+alicdn.com,Alibaba CDN
+taobao.com,Taobao Shopping
+tmall.com,Tmall Shopping
+jd.com,JD Ecommerce
+360.cn,Qihoo 360
+
+# ---- 社交、生活与内容平台 ----
+weibo.com,Sina Weibo
+sina.com.cn,Sina Portal
+bilibili.com,Bilibili Video
+hdslb.com,Bilibili Static
+bytedance.com,ByteDance Group
+amemv.com,TikTok/Douyin Core
+snssdk.com,ByteDance Share
+toutiao.com,Jinri Toutiao
+zhihu.com,Zhihu Community
+xiaohongshu.com,Little Red Book
+meituan.com,Meituan O2O
+
+# ---- 开发者、技术社区与国内开源镜像 ----
+gitee.com,Gitee Code
+csdn.net,CSDN Technology
+juejin.cn,Juejin Developer
+oschina.net,OSChina OpenSource
+v2ex.com,V2EX Community (Optional CN)
+aliyun.com,Alibaba Cloud
+tsinghua.edu.cn,Tsinghua Mirror
+ustc.edu.cn,USTC Mirror
+
+# ---- 手机厂商系统基础设施与推送服务（防止系统OTA及推送断连） ----
+xiaomi.com,Xiaomi Ecosystem
+mi-img.com,Xiaomi Static
+miui.com,Xiaomi MIUI System
+huawei.com,Huawei Group
+dbankcdn.com,Huawei CDN
+honor.com,Honor Device
+oppo.com,OPPO Device
+vivo.com,VIVO Device
+apple.com,Apple CN Direct (Highly Recommended)
+mzcdn.com,Meizu CDN
+
+# ---- 国内流媒体、音乐与游戏 ----
+youku.com,Youku Video
+iqiyi.com,iQIYI Video
+netease.com,NetEase Mail/Game
+163.com,NetEase Portal
+music.126.net,NetEase Cloud Music CDN
+deepin.org,Deepin Linux
+
+# ---- 字节跳动 / 抖音相关生态（补充） ----
+douyin.com,Douyin Web
+amemv.com,Douyin Core API
+snssdk.com,ByteDance Shared CDN
+iesdouyin.com,Douyin Video Static
+
+# ---- 快手短视频平台 ----
+kuaishou.com,Kuaishou Web
+gifshow.com,Kuaishou Core API
+ksapisrv.com,Kuaishou Service API
+yximgs.com,Kuaishou Static CDN
+
+# ---- 国内开发者与代码托管平台（新增） ----
+gitcode.com,GitCode CSDN
+cnb.cool,CNB Tencent Cloud
+coding.net,Coding Net (Tencent)
+
+# ---- 游戏社区与辅助工具 ----
+xiaoheihe.cn,XiaoHeiHe Community
+maxjia.com,MaxJia Gaming API
