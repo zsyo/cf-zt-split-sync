@@ -23,16 +23,16 @@ HEADERS = {
 # ----------------- 📡 远程数据源配置 -----------------
 
 # 【A 组：Include 模式使用的自用代理文件】
-PROXY_DOMAIN_URL = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/proxy_domains.txt"
-PROXY_IP_URL     = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/proxy_ips.txt"
+PROXY_DOMAIN_URL = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/proxy_domains.txt"
+PROXY_IP_URL     = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/proxy_ips.txt"
 
 # 【B 组：Exclude 模式使用的自用排除文件】
 # 1. 本地内网 IP 段（如 192.168.0.0/16 等）
-EXCLUDE_LOCAL_IP_URL   = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/local_ips.txt"
+EXCLUDE_LOCAL_IP_URL   = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/local_ips.txt"
 # 2. 排除域名（国内直连域名，如 baidu.com 等）
-EXCLUDE_DOMAIN_URL     = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/exclude_domains.txt"
+EXCLUDE_DOMAIN_URL     = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/exclude_domains.txt"
 # 3. 排除 IP 段（国内直连公网 IP 段段，如 GeoIP 提取的段）
-EXCLUDE_PUBLIC_IP_URL   = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/exclude_ips.txt"
+EXCLUDE_PUBLIC_IP_URL   = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/exclude_ips.txt"
 
 
 def load_remote_file(url, is_domain=False):

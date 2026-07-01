@@ -20,7 +20,7 @@
 ## 工作原理
 
 ```text
-proxy_domains.txt / proxy_ips.txt          local_ips.txt / exclude_domains.txt / exclude_ips.txt
+rules/proxy_domains.txt / rules/proxy_ips.txt    rules/local_ips.txt / rules/exclude_domains.txt / rules/exclude_ips.txt
         ↓ Include 模式                              ↓ Exclude 模式
                         ↓ 加载远程文件 → 组装路由规则 ↓
                       sync-split.py
@@ -65,11 +65,11 @@ proxy_domains.txt / proxy_ips.txt          local_ips.txt / exclude_domains.txt /
 
 | 文件 | 用途 | 适用模式 |
 |------|------|----------|
-| `proxy_domains.txt` | 需要走代理的域名 | `include` |
-| `proxy_ips.txt` | 需要走代理的 IP 段 | `include` |
-| `exclude_domains.txt` | 需要直连的域名 | `exclude` |
-| `exclude_ips.txt` | 需要直连的公网 IP 段 | `exclude` |
-| `local_ips.txt` | 本地内网 IP 段 | `exclude` |
+| `rules/proxy_domains.txt` | 需要走代理的域名 | `include` |
+| `rules/proxy_ips.txt` | 需要走代理的 IP 段 | `include` |
+| `rules/exclude_domains.txt` | 需要直连的域名 | `exclude` |
+| `rules/exclude_ips.txt` | 需要直连的公网 IP 段 | `exclude` |
+| `rules/local_ips.txt` | 本地内网 IP 段 | `exclude` |
 
 - 每行一条记录，支持 `#` 开头的注释
 - 域名无需带前导点或协议前缀
@@ -109,8 +109,8 @@ proxy_domains.txt / proxy_ips.txt          local_ips.txt / exclude_domains.txt /
 
 | 文件 | 预置内容 | 条目数 |
 |------|----------|--------|
-| `proxy_domains.txt` | Google、OpenAI、Anthropic、GitHub、YouTube、Discord、Docker 等常用境外服务 | ~73 个域名 |
-| `proxy_ips.txt` | 暂无（可按需添加 IP 段） | 0 |
+| `rules/proxy_domains.txt` | Google、OpenAI、Anthropic、GitHub、YouTube、Discord、Docker 等常用境外服务 | ~73 个域名 |
+| `rules/proxy_ips.txt` | 暂无（可按需添加 IP 段） | 0 |
 
 每个域名会自动生成两条规则：`example.com` 和 `*.example.com`，确保子域名也被正确代理。
 
@@ -120,9 +120,9 @@ proxy_domains.txt / proxy_ips.txt          local_ips.txt / exclude_domains.txt /
 
 | 文件 | 用途 |
 |------|------|
-| `local_ips.txt` | 本地内网 IP 段（如 `192.168.0.0/16`、`10.0.0.0/8`） |
-| `exclude_domains.txt` | 需要直连的域名（如国内网站） |
-| `exclude_ips.txt` | 需要直连的公网 IP 段 |
+| `rules/local_ips.txt` | 本地内网 IP 段（如 `192.168.0.0/16`、`10.0.0.0/8`） |
+| `rules/exclude_domains.txt` | 需要直连的域名（如国内网站） |
+| `rules/exclude_ips.txt` | 需要直连的公网 IP 段 |
 
 ---
 
