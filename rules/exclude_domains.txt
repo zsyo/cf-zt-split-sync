@@ -73,3 +73,16 @@ coding.net,Coding Net (Tencent)
 # ---- 游戏社区与辅助工具 ----
 xiaoheihe.cn,XiaoHeiHe Community
 maxjia.com,MaxJia Gaming API
+
+# ---- 拼多多相关生态 ----
+pinduoduo.com,Pinduoduo Web
+yangkeduo.com,Pinduoduo Core App
+pddpic.com,Pinduoduo Image CDN
+pddupload.com,Pinduoduo User Uploads
+
+# ---- 支付宝 / 蚂蚁集团相关生态 ----
+alipay.com,Alipay Core
+alipayobjects.com,Alipay Static Assets
+antgroup.com,Ant Group Official
+antfin.com,Ant Financial Services
+amap.com,Amap Gaode (Alipay Location Service)
