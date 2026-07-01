@@ -74,6 +74,10 @@ proxy_domains.txt / proxy_ips.txt          local_ips.txt / exclude_domains.txt /
 - 每行一条记录，支持 `#` 开头的注释
 - 域名无需带前导点或协议前缀
 - IP 段使用 CIDR 格式（如 `192.168.0.0/16`）
+- 支持 `值,自定义描述` 格式：逗号前为域名/IP 段，逗号后为自定义描述（可选）
+  - 示例：`169.254.0.0/16,DHCP Unspecified` → 描述为 "DHCP Unspecified"
+  - 示例：`google.com,Google Search` → 生成两条规则，描述分别为 "Google Search" 和 "Google Search Sub"
+  - 无逗号时使用默认描述，行为不变
 
 ### 3. 配置 GitHub Secrets
 
@@ -109,6 +113,8 @@ proxy_domains.txt / proxy_ips.txt          local_ips.txt / exclude_domains.txt /
 | `proxy_ips.txt` | 暂无（可按需添加 IP 段） | 0 |
 
 每个域名会自动生成两条规则：`example.com` 和 `*.example.com`，确保子域名也被正确代理。
+
+> **自定义描述**：所有数据文件均支持 `值,自定义描述` 格式（逗号分隔）。自定义描述会替代默认描述标签显示在 Cloudflare 管理界面中，便于识别每条规则的用途。
 
 ### Exclude 模式
 

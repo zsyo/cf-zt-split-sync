@@ -58,15 +58,39 @@ def load_remote_file(url, is_domain=False):
 
 
 def build_domain_entries(domains, description_tag):
-    """通用的域名规则组装逻辑，自动生成双通配形式（根域名 + *.子域名）"""
+    """通用的域名规则组装逻辑，自动生成双通配形式（根域名 + *.子域名）
+    支持 `域名,自定义描述` 格式：逗号前为域名，逗号后为自定义 description
+    """
     entries = []
-    for domain in domains:
-        if domain.startswith("*."):
-            entries.append({"host": domain, "description": f"{description_tag} Sub"})
+    for raw in domains:
+        # 解析可选的自定义描述（以逗号分隔）
+        if "," in raw:
+            domain, custom_desc = raw.split(",", 1)
+            domain = domain.strip()
+            custom_desc = custom_desc.strip()
         else:
-            entries.append({"host": domain, "description": description_tag})
-            entries.append({"host": f"*.{domain}", "description": f"{description_tag} Sub"})
+            domain = raw
+            custom_desc = None
+
+        if domain.startswith("*."):
+            desc = custom_desc if custom_desc else f"{description_tag} Sub"
+            entries.append({"host": domain, "description": desc})
+        else:
+            root_desc = custom_desc if custom_desc else description_tag
+            sub_desc = f"{custom_desc} Sub" if custom_desc else f"{description_tag} Sub"
+            entries.append({"host": domain, "description": root_desc})
+            entries.append({"host": f"*.{domain}", "description": sub_desc})
     return entries
+
+
+def _parse_entry(raw, default_tag):
+    """解析单条规则条目，支持 `值,自定义描述` 格式
+    返回 (值, 描述) 元组；无逗号时使用默认描述
+    """
+    if "," in raw:
+        value, custom_desc = raw.split(",", 1)
+        return value.strip(), custom_desc.strip()
+    return raw, default_tag
 
 
 def remove_duplicate_routes(routes):
@@ -99,8 +123,9 @@ def sync_to_cloudflare():
 
         # 组装域名与 IP
         final_routes.extend(build_domain_entries(custom_domains, "Custom Proxy Domain"))
-        for ip in custom_ips:
-            final_routes.append({"address": ip, "description": "Custom Proxy IP"})
+        for raw in custom_ips:
+            ip, desc = _parse_entry(raw, "Custom Proxy IP")
+            final_routes.append({"address": ip, "description": desc})
 
     # ----------------- 逻辑分流：Exclude 模式 -----------------
     elif MODE == "exclude":
@@ -114,13 +139,15 @@ def sync_to_cloudflare():
         print(f"   └─ 已获取排除公网 IP 段: {len(exclude_public_ips)} 条")
 
         # 按顺序组装：本地 IP -> 排除域名（双通配）-> 排除公网 IP
-        for ip in local_ips:
-            final_routes.append({"address": ip, "description": "Local IP Block"})
+        for raw in local_ips:
+            ip, desc = _parse_entry(raw, "Local IP Block")
+            final_routes.append({"address": ip, "description": desc})
 
         final_routes.extend(build_domain_entries(exclude_domains, "Exclude Domain"))
 
-        for ip in exclude_public_ips:
-            final_routes.append({"address": ip, "description": "Exclude Public IP"})
+        for raw in exclude_public_ips:
+            ip, desc = _parse_entry(raw, "Exclude Public IP")
+            final_routes.append({"address": ip, "description": desc})
 
     # ----------------- 🌟 核心增量改动：全量去重 -----------------
     raw_count = len(final_routes)
