@@ -22,7 +22,6 @@ x.com,X Twitter
 twitter.com,Twitter Core
 t.co,Twitter/X Short Link (核心短网址)
 twimg.com,Twitter/X Image CDN (核心图床、视频封面)
-xvideos.com,XVideos Stream Web
 periscope.tv,Twitter Periscope (推特直播/广播基础设施)
 youtube.com,YouTube Video
 youtu.be,YouTube Short Link
