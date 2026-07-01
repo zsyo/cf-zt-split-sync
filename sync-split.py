@@ -69,6 +69,22 @@ def build_domain_entries(domains, description_tag):
     return entries
 
 
+def remove_duplicate_routes(routes):
+    """
+    对最终组装出来的路由规则列表进行深度去重
+    通过判断 host 或 address 的唯一性，确保相同的路由目标不会被重复提交
+    """
+    seen = set()
+    unique_routes = []
+    for route in routes:
+        # 提取路由核心特征：如果是域名则提取 host，如果是 IP 则提取 address
+        route_key = route.get("host") or route.get("address")
+        if route_key and route_key not in seen:
+            seen.add(route_key)
+            unique_routes.append(route)
+    return unique_routes
+
+
 def sync_to_cloudflare():
     print(f"🔄 当前运行模式 Mode: [{MODE}]")
     final_routes = []
@@ -106,12 +122,20 @@ def sync_to_cloudflare():
         for ip in exclude_public_ips:
             final_routes.append({"address": ip, "description": "Exclude Public IP"})
 
+    # ----------------- 🌟 核心增量改动：全量去重 -----------------
+    raw_count = len(final_routes)
+    final_routes = remove_duplicate_routes(final_routes)
+    duplicated_count = raw_count - len(final_routes)
+
+    if duplicated_count > 0:
+        print(f"🧹 规则去重器：已自动清洗并过滤了 {duplicated_count} 条重复的冲突路由条目。")
+
     # ----------------- 配额校验与上传 -----------------
     total_rules = len(final_routes)
-    print(f"📊 规则流水组装完毕，最终生成的规则总计: {total_rules} 条")
+    print(f"📊 规则流水组装完毕，最终生成的独立规则总计: {total_rules} 条")
 
     if total_rules > 4000:
-        print(f"⚠️  警告: 当前规则数 ({total_rules}) 已超出 Cloudflare 4000 条的硬性限制，将进行截断！")
+        print(f"⚠️  警告: 当前纯净规则数 ({total_rules}) 已超出 Cloudflare 4000 条的硬性限制，将进行截断！")
         final_routes = final_routes[:4000]
 
     execute_upload(final_routes)
