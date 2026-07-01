@@ -1,73 +1,78 @@
 # ---- 核心搜索引擎与 AI 服务 ----
-google.com
-gstatic.com
-googleusercontent.com
-googleapis.com
-openai.com
-chatgpt.com
-anthropic.com
-claude.ai
-microsoft.com
-live.com
-bing.com
+google.com,Google Core
+gstatic.com,Google Static
+googleusercontent.com,Google User Content
+googleapis.com,Google APIs
+openai.com,OpenAI Core
+chatgpt.com,ChatGPT Web
+anthropic.com,Anthropic Core
+claude.ai,Claude AI Web
+microsoft.com,Microsoft Core
+live.com,Microsoft Live
+bing.com,Bing Search
 
-# ---- Gemini 特殊多级子服务（解决深层子域名不匹配问题） ----
-clients6.google.com
-clients4.google.com
-google-analytics.com
-googletagmanager.com
+# ---- Gemini 特殊多级子服务 ----
+clients6.google.com,Gemini Deep API
+clients4.google.com,Google Account Client
+google-analytics.com,Google Analytics
+googletagmanager.com,Google Tag Manager
 
 # ---- 社交、音视频与社区 ----
-x.com
-twitter.com
-youtube.com
-ytimg.com
-ggpht.com
-instagram.com
-facebook.com
-meta.com
-telegram.org
-t.me
-discord.com
-discordapp.com
-twitch.tv
-reddit.com
-medium.com
-wikipedia.org
-pixiv.net
+x.com,X Twitter
+twitter.com,Twitter Core
+youtube.com,YouTube Video
+ytimg.com,YouTube Static
+ggpht.com,Google Photos/Avatars
+instagram.com,Instagram
+facebook.com,Facebook
+meta.com,Meta Core
+telegram.org,Telegram Core
+t.me,Telegram Link Share
+discord.com,Discord Core
+discordapp.com,Discord Assets
+twitch.tv,Twitch Stream
+medium.com,Medium Blog
+wikipedia.org,Wikipedia
+pixiv.net,Pixiv Art
+
+# ---- Reddit 相关核心域名 ----
+reddit.com,Reddit Core
+redd.it,Reddit Short Link
+redditstatic.com,Reddit Static
+redditmedia.com,Reddit Media
 
 # ---- 开发者工具、代码托管与开源技术 ----
-github.com
-githubassets.com
-githubusercontent.com
-git-scm.com
-gitlab.com
-docker.com
-docker.io
-crates.io
-rust-lang.org
-golang.org
-npmjs.com
-pypi.org
-v2ex.com
-stackoverflow.com
-npmjs.org
+github.com,GitHub Core
+githubassets.com,GitHub Assets
+githubusercontent.com,GitHub Raw User Content
+git-scm.com,Git SCM Doc
+gitlab.com,GitLab Core
+docker.com,Docker Web
+docker.io,Docker Registry Hub
+crates.io,Rust Crates Registry
+rust-lang.org,Rust Language Official
+golang.org,Go Language Official
+npmjs.com,NPM Registry
+pypi.org,PyPI Python Registry
+v2ex.com,V2EX Community
+stackoverflow.com,StackOverflow
+npmjs.org,NPM Official
 
 # ---- 常用效率工具与云服务 ----
-notion.so
-notion.site
-one-hub.com
-dropbox.com
-onedrive.com
-icloud.com
-apple.com
-slack.com
-zoom.us
+notion.so,Notion Workspace
+notion.site,Notion Public Site
+one-hub.com,OneHub Storage
+dropbox.com,Dropbox Cloud
+onedrive.com,OneDrive Cloud
+icloud.com,Apple iCloud
+apple.com,Apple Core Services
+slack.com,Slack Chat
+zoom.us,Zoom Video
 
 # ---- 常见流媒体与娱乐 ----
-netflix.com
-nflxvideo.net
-disneyplus.com
-spotify.com
-steamcommunity.com
-steampowered.com
+netflix.com,Netflix Video
+nflxvideo.net,Netflix CDN
+disneyplus.com,Disney Plus
+spotify.com,Spotify Music
+steamcommunity.com,Steam Community
+steampowered.com,Steam Store

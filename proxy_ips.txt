@@ -1,0 +1,41 @@
+# =========================================================
+# 常用代理软件/服务的核心公网 IP 段 (CIDR)
+# =========================================================
+
+# ---- Telegram 官方核心 IP 段 ----
+149.154.160.0/20,Telegram Mesh DC
+149.154.164.0/22,Telegram Mesh DC
+149.154.172.0/22,Telegram Mesh DC
+91.108.4.0/22,Telegram Mesh DC
+91.108.8.0/22,Telegram Mesh DC
+91.108.12.0/22,Telegram Mesh DC
+91.108.16.0/22,Telegram Mesh DC
+91.108.20.0/22,Telegram Mesh DC
+91.108.56.0/22,Telegram Mesh DC
+5.28.192.0/18,Telegram Mesh DC
+
+# ---- GitHub 核心 API 与 Git SSH 传输 IP 段 ----
+140.82.112.0/20,GitHub Core Network
+192.30.252.0/22,GitHub Core Network
+143.55.64.0/20,GitHub Core Network
+
+# ---- OpenAI / ChatGPT 核心边缘网络 IP 段 ----
+104.18.12.0/22,OpenAI CF Edge
+104.18.22.0/23,OpenAI CF Edge
+104.22.64.0/21,OpenAI CF Edge
+172.64.144.0/20,OpenAI CF Edge
+
+# ---- Discord 官方语音与网关服务器 IP 段 ----
+66.22.196.0/22,Discord Voice Gateway
+162.159.128.0/20,Discord Static CDN
+
+# ---- Netflix 官方骨干网与 Open Connect CDN IP 段 ----
+23.246.0.0/18,Netflix Open Connect
+37.77.184.0/21,Netflix Open Connect
+45.57.0.0/17,Netflix Open Connect
+64.120.128.0/17,Netflix Open Connect
+66.197.128.0/17,Netflix Open Connect
+108.175.32.0/20,Netflix Open Connect
+192.173.64.0/18,Netflix Open Connect
+198.38.96.0/19,Netflix Open Connect
+198.45.48.0/20,Netflix Open Connect
