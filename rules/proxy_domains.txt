@@ -20,12 +20,26 @@ googletagmanager.com,Google Tag Manager
 # ---- 社交、音视频与社区 ----
 x.com,X Twitter
 twitter.com,Twitter Core
+t.co,Twitter/X Short Link (核心短网址)
+twimg.com,Twitter/X Image CDN (核心图床、视频封面)
+xvideos.com,XVideos Stream Web
+periscope.tv,Twitter Periscope (推特直播/广播基础设施)
 youtube.com,YouTube Video
+youtu.be,YouTube Short Link
+googlevideo.com,YouTube Video Stream CDN
+youtube-nocookie.com,YouTube Embedded Player
+youtubeembeddedplayer.com,YouTube Embedded Player API
+yt.be,YouTube Short URL Alternative
 ytimg.com,YouTube Static
 ggpht.com,Google Photos/Avatars
 instagram.com,Instagram
 facebook.com,Facebook
 meta.com,Meta Core
+cdninstagram.com,Instagram Media CDN (核心图片与视频流)
+fbsbx.com,Facebook Static Assets (核心组件与补丁)
+fbcdn.net,Facebook Global CDN (跨平台通用静态资源)
+messenger.com,Facebook Messenger (独立聊天工具)
+threads.net,Threads Social Network (Meta 旗下微博)
 telegram.org,Telegram Core
 telegram.me,Telegram Alternative Link
 t.me,Telegram Link Share
