@@ -5,7 +5,7 @@ import requests
 # ----------------- 环境变量与配置 -----------------
 CF_API_TOKEN = os.getenv("CF_API_TOKEN")
 ACCOUNT_ID   = os.getenv("CF_ACCOUNT_ID")
-PROFILE_ID   = os.getenv("CF_PROFILE_ID", "")
+PROFILE_IDS  = [pid.strip() for pid in os.getenv("CF_PROFILE_ID", "").split(",") if pid.strip()]
 MODE         = os.getenv("MODE", "include")  # 支持设定为 include 或 exclude
 ALLOWED_MODES = {"exclude", "include"}
 
@@ -169,20 +169,30 @@ def sync_to_cloudflare():
 
 
 def execute_upload(routes):
-    if PROFILE_ID:
-        url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/devices/policy/{PROFILE_ID}/{MODE}"
-    else:
+    # 如果未指定策略 ID，则使用默认策略（单次上传）
+    if not PROFILE_IDS:
         url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/devices/policy/{MODE}"
+        print(f"🚀 正在上传至 Cloudflare (默认策略 | Mode: {MODE})...")
+        resp = requests.put(url, json=routes, headers=HEADERS)
+        if resp.status_code in (200, 204):
+            print(f"✅ 同步成功！默认策略已完全覆盖。")
+        else:
+            print(f"❌ 失败 {resp.status_code}: Cloudflare API 错误")
+            print(resp.text)
+            resp.raise_for_status()
+        return
 
-    print(f"🚀 正在上传至 Cloudflare (路由目标配置 Mode: {MODE})...")
-    resp = requests.put(url, json=routes, headers=HEADERS)
-
-    if resp.status_code in (200, 204):
-        print(f"✅ 同步成功！策略已完全覆盖。")
-    else:
-        print(f"❌ 失败 {resp.status_code}: Cloudflare API 错误")
-        print(resp.text)
-        resp.raise_for_status()
+    # 多策略逐个同步
+    total = len(PROFILE_IDS)
+    for idx, pid in enumerate(PROFILE_IDS, 1):
+        url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/devices/policy/{pid}/{MODE}"
+        print(f"🚀 [{idx}/{total}] 正在上传至 Cloudflare (策略 ID: {pid} | Mode: {MODE})...")
+        resp = requests.put(url, json=routes, headers=HEADERS)
+        if resp.status_code in (200, 204):
+            print(f"   ✅ 策略 {pid} 同步成功！")
+        else:
+            print(f"   ❌ 策略 {pid} 失败 {resp.status_code}: {resp.text.strip()}")
+            resp.raise_for_status()
 
 
 if __name__ == "__main__":

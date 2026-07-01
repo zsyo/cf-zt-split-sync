@@ -87,7 +87,7 @@ proxy_domains.txt / proxy_ips.txt          local_ips.txt / exclude_domains.txt /
 |-------------|------|----------|
 | `CF_API_TOKEN` | Cloudflare API Token，需具备 Zero Trust 写权限 | ✅ 必填 |
 | `CF_ACCOUNT_ID` | Cloudflare 账户 ID，可在控制台右侧边栏找到 | ✅ 必填 |
-| `CF_PROFILE_ID` | 设备策略 ID，留空则使用默认策略 | ❌ 可选 |
+| `CF_PROFILE_ID` | 设备策略 ID，支持逗号分隔多个 ID（如 `id1,id2`），留空则使用默认策略 | ❌ 可选 |
 | `MODE` | 分流模式：`include` 或 `exclude`，默认 `include` | ❌ 可选 |
 
 #### 如何获取 API Token
@@ -147,8 +147,8 @@ pip install requests
 # 设置环境变量
 export CF_API_TOKEN="your_api_token"
 export CF_ACCOUNT_ID="your_account_id"
-export CF_PROFILE_ID=""    # 留空使用默认策略
-export MODE="include"      # include 或 exclude
+export CF_PROFILE_ID=""     # 留空使用默认策略，多个 ID 用逗号分隔如 "id1,id2"
+export MODE="include"       # include 或 exclude
 
 # 运行脚本
 python sync-split.py
