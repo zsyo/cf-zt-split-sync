@@ -11,6 +11,12 @@ microsoft.com
 live.com
 bing.com
 
+# ---- Gemini 特殊多级子服务（解决深层子域名不匹配问题） ----
+clients6.google.com
+clients4.google.com
+google-analytics.com
+googletagmanager.com
+
 # ---- 社交、音视频与社区 ----
 x.com
 twitter.com
