@@ -93,7 +93,6 @@ hub.docker.com,Docker Hub Web
 notion.so,Notion Workspace
 notion.site,Notion Public Site
 one-hub.com,OneHub Storage
-dropbox.com,Dropbox Cloud
 onedrive.com,OneDrive Cloud
 icloud.com,Apple iCloud
 apple.com,Apple Core Services

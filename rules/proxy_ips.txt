@@ -49,9 +49,6 @@
 2a01:5c0::/32,GitHub IPv6 Network
 2606:50c0::/32,GitHub Pages IPv6
 
-# ---- OpenAI / ChatGPT 核心边缘网络 IPv6 网段 ----
-2606:4700::/32,OpenAI CF Edge IPv6
-
 # ---- Netflix 官方骨干网 IPv6 网段 ----
 2a00:86c0::/32,Netflix Open Connect IPv6
 2607:fb10::/32,Netflix Open Connect IPv6
