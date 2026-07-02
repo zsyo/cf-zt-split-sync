@@ -73,3 +73,12 @@
 
 # ---- Vultr 官方核心公网 IPv6 段 ----
 2001:19f0::/32,Vultr Infrastructure IPv6
+
+# ---- MEGA 官方自建机房核心 IPv4 段 ----
+31.216.144.0/20,MEGA Storage Backbone
+154.53.224.0/19,MEGA Storage Backbone
+
+# ---- Dropbox 官方自建机房核心 IPv4 段 ----
+162.248.160.0/22,Dropbox Datacenter
+108.160.160.0/20,Dropbox Datacenter
+45.58.64.0/20,Dropbox Datacenter

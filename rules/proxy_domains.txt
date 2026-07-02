@@ -63,6 +63,9 @@ redditmedia.com,Reddit Media
 github.com,GitHub Core
 githubassets.com,GitHub Assets
 githubusercontent.com,GitHub Raw User Content
+github.blog,GitHub Blog
+assets-cdn.github.com,GitHub CDN Assets
+individual.githubcopilot.com,GitHub Copilot
 git-scm.com,Git SCM Doc
 gitlab.com,GitLab Core
 docker.com,Docker Web
@@ -105,10 +108,36 @@ spotify.com,Spotify Music
 steamcommunity.com,Steam Community
 steampowered.com,Steam Store
 
+# ---- 境外常用网盘与云存储 ----
+mega.nz,MEGA Cloud Storage
+mega.co.nz,MEGA Cloud Storage Alternative
+mediafire.com,MediaFire Storage
+terabox.com,TeraBox Global (百度网盘海外版)
+gofile.io,Gofile Anonymous Free Storage
+pcloud.com,pCloud Secure Storage
+dropbox.com,Dropbox Cloud Storage
+dropboxstatic.com,Dropbox Static Content
+pikpak.com,PikPak Official Web
+mypikpak.com,PikPak Core Web Portal
+pikpakapi.com,PikPak API & Video Stream Gateway
+
+# ---- 境外独立图床、视频床与设计分享（前端/自建应用高频） ----
+imgur.com,Imgur Image Hub
+i.imgur.com,Imgur Direct Image CDN
+catbox.moe,Catbox Creative Storage
+streamable.com,Streamable Video Hosting
+vimeo.com,Vimeo Premium Video Platform
+vimeocdn.com,Vimeo Video CDN
+
 # ---- 游戏社区配套境外服务（小黑盒/Steam 数据交互） ----
 steam-chat.com,Steam Chat Service
 steamstatic.com,Steam Static Content
 steamusercontent.com,Steam User Images
+mod.io,Mod.io Game Mods
+modcdn.io,Mod.io CDN Assets
+lge.modcdn.io,Mod.io CDN Assets
+nexusmods.com,Nexus Mods
+nexus-cdn.com,Nexus CDN Assets
 
 # ---- 国内平台常引用的境外公共资源 ----
 unpkg.com,Unpkg NPM CDN
@@ -146,7 +175,6 @@ hf.co,Hugging Face Short URL
 civitai.com,Civitai AI Models (C站)
 replicate.com,Replicate Cloud AI Run
 groq.com,Groq AI Inference
-deepseek.com,DeepSeek AI Core
 together.xyz,Together AI Cloud
 cohere.com,Cohere AI Core
 perplexities.co,Perplexity AI Search
@@ -154,6 +182,7 @@ perplexity.ai,Perplexity AI Search
 oaistatic.com,OpenAI Static Assets
 oaiusercontent.com,OpenAI User Uploads
 sentry.io,AI Infrastructure Error Tracking
+lmstudio.ai,LM Studio AI Inference
 
 # ---- AI 开发者工具与周边生态 ----
 pinecone.io,Pinecone Vector DB

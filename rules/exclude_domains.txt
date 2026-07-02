@@ -34,6 +34,9 @@ tsinghua.edu.cn,Tsinghua Mirror
 ustc.edu.cn,USTC Mirror
 edu.cn,Education Website
 gov.cn,Government Website
+deepseek.com,DeepSeek AI Core
+modelscope.cn,ModelScope AI Models
+runninghub.cn,RunningHub AI Models
 
 # ---- 手机厂商系统基础设施与推送服务（防止系统OTA及推送断连） ----
 mi.com,Mi Ecosystem
@@ -89,3 +92,19 @@ alipayobjects.com,Alipay Static Assets
 antgroup.com,Ant Group Official
 antfin.com,Ant Financial Services
 amap.com,Amap Gaode (Alipay Location Service)
+
+# ---- 国内常用网盘与企业云盘（强制直连排除） ----
+pan.baidu.com,Baidu Netdisk Web
+baidupcs.com,Baidu PCS Downloader CDN
+aliyundrive.com,Aliyun Drive (阿里云盘旧域)
+alipan.com,Aliyun Drive Official (阿里云盘新域)
+quark.cn,Quark Cloud Storage (夸克网盘)
+115.com,115 Cloud Storage
+lanzou.com,Lanzou Cloud (蓝奏云主站)
+lanzoux.com,Lanzou Cloud Alternative
+lanzoui.com,Lanzou Cloud Alternative
+weiyun.com,Tencent WeiYun
+123pan.com,123Pan Web Portal
+123pan.cn,123Pan Downloader CDN
+ctyun.cn,China Telecom CTCloud Core (天翼云核心)
+189.cn,China Telecom 189 Portal (天翼云盘业务)
