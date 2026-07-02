@@ -97,16 +97,20 @@ def remove_duplicate_routes(routes):
     """
     对最终组装出来的路由规则列表进行深度去重
     通过判断 host 或 address 的唯一性，确保相同的路由目标不会被重复提交
+    返回 (去重后的路由列表, 去重后的重复条目集合)
     """
     seen = set()
     unique_routes = []
+    duplicates = set()
     for route in routes:
         # 提取路由核心特征：如果是域名则提取 host，如果是 IP 则提取 address
         route_key = route.get("host") or route.get("address")
         if route_key and route_key not in seen:
             seen.add(route_key)
             unique_routes.append(route)
-    return unique_routes
+        elif route_key:
+            duplicates.add(route_key)
+    return unique_routes, duplicates
 
 
 def sync_to_cloudflare():
@@ -151,11 +155,14 @@ def sync_to_cloudflare():
 
     # ----------------- 🌟 核心增量改动：全量去重 -----------------
     raw_count = len(final_routes)
-    final_routes = remove_duplicate_routes(final_routes)
+    final_routes, duplicates = remove_duplicate_routes(final_routes)
     duplicated_count = raw_count - len(final_routes)
 
     if duplicated_count > 0:
         print(f"🧹 规则去重器：已自动清洗并过滤了 {duplicated_count} 条重复的冲突路由条目。")
+        print("   重复条目列表（已去重）：")
+        for dup in sorted(duplicates):
+            print(f"     • {dup}")
 
     # ----------------- 配额校验与上传 -----------------
     total_rules = len(final_routes)
@@ -175,7 +182,7 @@ def execute_upload(routes):
         print(f"🚀 正在上传至 Cloudflare (默认策略 | Mode: {MODE})...")
         resp = requests.put(url, json=routes, headers=HEADERS)
         if resp.status_code in (200, 204):
-            print(f"✅ 同步成功！默认策略已完全覆盖。")
+            print("✅ 同步成功！默认策略已完全覆盖。")
         else:
             print(f"❌ 失败 {resp.status_code}: Cloudflare API 错误")
             print(resp.text)
