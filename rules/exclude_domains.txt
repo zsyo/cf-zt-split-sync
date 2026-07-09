@@ -23,6 +23,17 @@ zhihu.com,Zhihu Community
 xiaohongshu.com,Little Red Book
 meituan.com,Meituan O2O
 
+# ---- 微信与腾讯通讯相关（解决消息图片延迟/裂开） ----
+weixin.qq.com,WeChat Core API
+wxqcloud.qq.com,WeChat Static Media CDN
+weixinbridge.com,WeChat Bridge Services
+qlogo.cn,Tencent Avatars & Logos CDN
+qpic.cn,Tencent Shared Images CDN
+
+# ---- 飞书 / 企业级协同办公 ----
+feishu.cn,Feishu Workspace
+fs.buscdn.com,Feishu Static Assets CDN
+
 # ---- 开发者、技术社区与国内开源镜像 ----
 gitee.com,Gitee Code
 csdn.net,CSDN Technology
@@ -37,6 +48,25 @@ gov.cn,Government Website
 deepseek.com,DeepSeek AI Core
 modelscope.cn,ModelScope AI Models
 runninghub.cn,RunningHub AI Models
+registry.npmmirror.com,NPMMirror Registry
+goproxy.cn,GoProxy Mirror
+goproxy.io,GoProxy Mirror
+
+# ---- 国内大模型与 AI 工具生态 ----
+moonshot.cn,Kimi Chat AI (月之暗面)
+zhipuai.cn,Zhipu GLM AI (智谱清言)
+baichuan-ai.com,Baichuan AI (百川智能)
+sensetime.com,SenseTime AI (商汤科技)
+
+# ---- 顶级公有云与控制台（针对 DevOps 调优） ----
+tencentcloudapi.com,Tencent Cloud API Gateway
+qcloud.com,Tencent Cloud Infrastructure
+myqcloud.com,Tencent Cloud Console & CDN
+huaweicloud.com,Huawei Cloud Core
+volcengine.com,VolcEngine (火山引擎/字节云)
+
+# ---- 高频技术社区与博客 ----
+cnblogs.com,CNBlogs Community
 
 # ---- 手机厂商系统基础设施与推送服务（防止系统OTA及推送断连） ----
 mi.com,Mi Ecosystem
@@ -58,6 +88,17 @@ netease.com,NetEase Mail/Game
 163.com,NetEase Portal
 music.126.net,NetEase Cloud Music CDN
 deepin.org,Deepin Linux
+
+# ---- 音频、播客与垂直视频平台 ----
+ximalaya.com,Ximalaya FM Audio (喜马拉雅)
+xmcdn.com,Ximalaya Static CDN
+xiaoyuzhoufm.com,XiaoYuZhou Podcast (小宇宙播客)
+mgtv.com,Mango TV Video (芒果TV)
+
+# ---- 头部游戏垂直社区（原神/网易游戏高频必备） ----
+mihoyo.com,MiHoYo Game Core (米哈游)
+miyoushe.com,MiYouShe HoYoLAB CN
+netease.im,NetEase NeteaseIM (网易大神/游戏长连接)
 
 # ---- 字节跳动 / 抖音相关生态（补充） ----
 douyin.com,Douyin Web
@@ -92,6 +133,13 @@ alipayobjects.com,Alipay Static Assets
 antgroup.com,Ant Group Official
 antfin.com,Ant Financial Services
 amap.com,Amap Gaode (Alipay Location Service)
+
+# ---- 购物与潮流电商（补充） ----
+dewu.com,Poizon Dewu E-commerce
+poizon.com,Dewu App Core API
+shizhuang-inc.com,Dewu App Static Storage
+vip.com,Vipshop Ecommerce (唯品会)
+vipstatic.com,Vipshop Static Assets CDN
 
 # ---- 国内常用网盘与企业云盘（强制直连排除） ----
 pan.baidu.com,Baidu Netdisk Web
