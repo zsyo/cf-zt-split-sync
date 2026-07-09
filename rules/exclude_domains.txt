@@ -103,6 +103,12 @@ mgtv.com,Mango TV Video (芒果TV)
 mihoyo.com,MiHoYo Game Core (米哈游)
 miyoushe.com,MiYouShe HoYoLAB CN
 netease.im,NetEase NeteaseIM (网易大神/游戏长连接)
+infinitynikki.nuanpaper.com,无限暖暖国内版官方网站及启动器分发域
+infinitynikki.infoldgames.com,无限暖暖国际版/港澳台版官方网站
+infoldgames.com,Infold Games 全球官网、账户及登录鉴权
+nuanpaper.com,叠纸网络（暖纸）国内核心业务及资源分发域
+papegames.com,叠纸游戏通用根域名（旧版/部分通用 API 仍在使用）
+papegames.cn,叠纸游戏国内备案及分发服务
 
 # ---- 字节跳动 / 抖音相关生态（补充） ----
 douyin.com,Douyin Web
