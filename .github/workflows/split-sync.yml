@@ -1,4 +1,4 @@
-name: 每周一同步 Split Tunnels 到 Cloudflare Zero Trust
+name: 定时同步任务
 permissions:
   contents: read
 
