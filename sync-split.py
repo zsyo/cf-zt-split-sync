@@ -262,7 +262,7 @@ def sync_local_domain_fallback(exclude_domains_raw):
             seen_suffixes.add(suffix_val)
             fallback_payload.append({
                 "suffix": suffix_val,
-                "dns_servers": [FALLBACK_DNS],
+                "dns_server": [FALLBACK_DNS],
                 "description": desc_val
             })
 
@@ -277,7 +277,7 @@ def sync_local_domain_fallback(exclude_domains_raw):
             seen_suffixes.add(root_domain)
             fallback_payload.append({
                 "suffix": root_domain,
-                "dns_servers": [FALLBACK_DNS],
+                "dns_server": [FALLBACK_DNS],
                 "description": custom_desc  # 完美保留原先规则中逗号后的描述
             })
             domain_fallback_count += 1
@@ -287,7 +287,7 @@ def sync_local_domain_fallback(exclude_domains_raw):
 
     # 3. 通过 API 执行全量覆盖同步
     if not PROFILE_IDS:
-        url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/devices/policy/fallback"
+        url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/devices/policy/fallback_domains"
         print("🚀 正在上传 Fallback 规则至 Cloudflare (默认策略)...")
         resp = requests.put(url, json=fallback_payload, headers=HEADERS)
         if resp.status_code in (200, 204):
@@ -297,7 +297,7 @@ def sync_local_domain_fallback(exclude_domains_raw):
     else:
         total = len(PROFILE_IDS)
         for idx, pid in enumerate(PROFILE_IDS, 1):
-            url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/devices/policy/{pid}/fallback"
+            url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/devices/policy/{pid}/fallback_domains"
             print(f"🚀 [{idx}/{total}] 正在上传 Fallback 规则至 Cloudflare (策略 ID: {pid})...")
             resp = requests.put(url, json=fallback_payload, headers=HEADERS)
             if resp.status_code in (200, 204):
