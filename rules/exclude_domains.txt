@@ -160,3 +160,11 @@ weiyun.com,Tencent WeiYun
 123pan.cn,123Pan Downloader CDN
 ctyun.cn,China Telecom CTCloud Core (天翼云核心)
 189.cn,China Telecom 189 Portal (天翼云盘业务)
+
+# ---- 自用论坛社区 ----
+binmt.cc,MT论坛
+pcbeta.com,远景论坛
+kanxue.com,看雪论坛
+52pojie.cn,吾爱破解论坛
+kafan.cn,卡饭论坛
+zntx.cc,八神智能社区
