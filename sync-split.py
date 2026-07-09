@@ -3,14 +3,13 @@ import os
 import requests
 
 # ----------------- 环境变量与配置 -----------------
-CF_API_TOKEN = os.getenv("CF_API_TOKEN")
-ACCOUNT_ID   = os.getenv("CF_ACCOUNT_ID")
-PROFILE_IDS  = [pid.strip() for pid in os.getenv("CF_PROFILE_ID", "").split(",") if pid.strip()]
-MODE         = os.getenv("MODE", "include")  # 支持设定为 include 或 exclude
-ALLOWED_MODES = {"exclude", "include"}
-
-# 新增：本地域名回退默认 DNS
-FALLBACK_DNS = os.getenv("FALLBACK_DNS", "119.29.29.29").strip()
+CF_API_TOKEN        = os.getenv("CF_API_TOKEN")
+ACCOUNT_ID          = os.getenv("CF_ACCOUNT_ID")
+PROFILE_IDS         = [pid.strip() for pid in os.getenv("CF_PROFILE_ID", "").split(",") if pid.strip()]
+MODE                = os.getenv("MODE", "include")  # 支持设定为 include 或 exclude
+ALLOWED_MODES       = {"exclude", "include"}
+FALLBACK_DNS        = os.getenv("FALLBACK_DNS", "119.29.29.29").strip() # 本地域名回退默认 DNS
+USE_REMOTE_RULES    = os.getenv("USE_REMOTE_RULES", "false").strip().lower() == "true" # 是否启用远程文件规则（设置为 "true" 时走网络拉取）
 
 if not all([CF_API_TOKEN, ACCOUNT_ID]):
     raise ValueError("缺少环境变量！请设置 CF_API_TOKEN 和 CF_ACCOUNT_ID")
@@ -23,44 +22,76 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
+# ----------------- 💾 本地固定的文件名配置 -----------------
+# 默认脚本会严格顺着这个字典查找 rules/ 下的文件, 当开启 USE_REMOTE_RULES 时，会从远程 URL 加载
+LOCAL_FILES = {
+    "PROXY_DOMAIN": "proxy_domains.txt", # 代理域名列表
+    "PROXY_IP": "proxy_ips.txt", # 代理 IP 列表
+    "EXCLUDE_LOCAL_IP": "local_ips.txt", # 本地 IP 段列表（如 192.168.0.0/16 等）
+    "EXCLUDE_DOMAIN": "exclude_domains.txt", # 排除域名列表（国内直连域名，如 baidu.com 等）
+    "EXCLUDE_PUBLIC_IP": "exclude_ips.txt", # 排除公网 IP 段列表（国内直连公网 IP 段段，如 GeoIP 提取的段）
+    "FALLBACK_LOCAL": "fallback_local.txt" # 本地回退规则
+}
+
 # ----------------- 📡 远程数据源配置 -----------------
-
-# 【A 组：Include 模式使用的自用代理文件】
-PROXY_DOMAIN_URL = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/proxy_domains.txt"
-PROXY_IP_URL     = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/proxy_ips.txt"
-
-# 【B 组：Exclude 模式使用的自用排除文件】
-# 1. 本地内网 IP 段（如 192.168.0.0/16 等）
-EXCLUDE_LOCAL_IP_URL   = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/local_ips.txt"
-# 2. 排除域名（国内直连域名，如 baidu.com 等）
-EXCLUDE_DOMAIN_URL     = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/exclude_domains.txt"
-# 3. 排除 IP 段（国内直连公网 IP 段段，如 GeoIP 提取的段）
-EXCLUDE_PUBLIC_IP_URL   = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/exclude_ips.txt"
-
-# 新增：CF 默认本地回退规则（高优先级）
-FALLBACK_LOCAL_URL      = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/fallback_local.txt"
+PROXY_DOMAIN_URL        = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/proxy_domains.txt"  # 代理域名列表
+PROXY_IP_URL            = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/proxy_ips.txt"  # 代理 IP 列表
+EXCLUDE_LOCAL_IP_URL    = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/local_ips.txt"  # 本地 IP 段列表（如 192.168.0.0/16 等）
+EXCLUDE_DOMAIN_URL      = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/exclude_domains.txt"  # 排除域名列表（国内直连域名，如 baidu.com 等）
+EXCLUDE_PUBLIC_IP_URL   = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/exclude_ips.txt"  # 排除公网 IP 段列表（国内直连公网 IP 段段，如 GeoIP 提取的段）
+FALLBACK_LOCAL_URL      = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/fallback_local.txt"  # 本地回退规则
 
 
-def load_remote_file(url, is_domain=False):
-    """通用远程文件加载，支持过滤注释、空行和去重"""
-    if not url:
-        return []
-    try:
-        r = requests.get(url, timeout=30)
-        r.raise_for_status()
-    except Exception as e:
-        print(f"⚠️  从远程读取数据失败: {url} | 错误: {e}")
-        return []
+def load_rules_data(file_key, remote_url, is_domain=False):
+    """
+    解耦规则加载器：
+    - 当 USE_REMOTE_RULES 为 true，请求传入的完整远程绝对路径 remote_url
+    - 否则，直接读取 rules/<LOCAL_FILES[file_key]>
+    """
+    lines = []
 
+    # ─── 方案 A：默认走远程完整绝对 URL 下载 ───
+    if USE_REMOTE_RULES:
+        lines = _load_from_remote(remote_url)
+
+    # ─── 方案 B：直接读取本地 rules 目录下的文件 ───
+    else:
+        local_name = LOCAL_FILES.get(file_key)
+        local_path = os.path.join("rules", local_name) if local_name else None
+
+        if not local_path or not os.path.exists(local_path):
+            print(f"⚠️  未找到本地文件: {local_path}，尝试降级切换为网络读取远程 URL...")
+            lines = _load_from_remote(remote_url)
+        else:
+            print(f"📖 [本地读取] 正在加载: {local_path}")
+            with open(local_path, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+
+    # 统一清洗、过滤注释和去重
     results = []
-    for line in r.text.splitlines():
+    for line in lines:
         line = line.strip()
         if not line or line.startswith("#"):
             continue
         if is_domain:
             line = line.lstrip('.')  # 去除可能误写的前导点
         results.append(line)
+
     return list(set(results))
+
+
+def _load_from_remote(url):
+    """内部私有远程拉取函数"""
+    if not url:
+        return []
+    print(f"📡 [网络读取] 正在拉取: {url}")
+    try:
+        r = requests.get(url, timeout=30)
+        r.raise_for_status()
+        return r.text.splitlines()
+    except Exception as e:
+        print(f"⚠️  从远程读取数据失败: {url} | 错误: {e}")
+        return []
 
 
 def extract_root_domain_with_desc(raw_line, default_tag):
@@ -146,22 +177,20 @@ def remove_duplicate_routes(routes):
 
 
 def sync_to_cloudflare():
-    print(f"🔄 当前运行模式 Mode: [{MODE}]")
+    print(f"🔄 当前运行模式 Mode: [{MODE}] | 使用远程规则: [{USE_REMOTE_RULES}]")
     final_routes = []
 
     # 无论何种模式，都读取排除列表用于回退配置
     print("📡 正在拉取 [exclude_domains.txt] 用于生成本地域名回退...")
-    exclude_domains_raw = load_remote_file(EXCLUDE_DOMAIN_URL, is_domain=True)
+    exclude_domains_raw = load_rules_data("EXCLUDE_DOMAIN", EXCLUDE_DOMAIN_URL, is_domain=True)
 
     # ----------------- 逻辑分流：Include 模式 -----------------
     if MODE == "include":
         print("📡 开始拉取 [Include 模式] 对应的自用代理源...")
-        custom_domains = load_remote_file(PROXY_DOMAIN_URL, is_domain=True)
-        custom_ips = load_remote_file(PROXY_IP_URL, is_domain=False)
+        custom_domains = load_rules_data("PROXY_DOMAIN", PROXY_DOMAIN_URL, is_domain=True)
+        custom_ips = load_rules_data("PROXY_IP", PROXY_IP_URL, is_domain=False)
 
         print(f"   └─ 已获取代理域名: {len(custom_domains)} 个 | 代理 IP 段: {len(custom_ips)} 条")
-
-        # 组装域名与 IP
         final_routes.extend(build_domain_entries(custom_domains, "Custom Proxy Domain"))
         for raw in custom_ips:
             ip, desc = _parse_entry(raw, "Custom Proxy IP")
@@ -170,8 +199,8 @@ def sync_to_cloudflare():
     # ----------------- 逻辑分流：Exclude 模式 -----------------
     elif MODE == "exclude":
         print("📡 开始拉取 [Exclude 模式] 对应的自用排除源...")
-        local_ips = load_remote_file(EXCLUDE_LOCAL_IP_URL, is_domain=False)
-        exclude_public_ips = load_remote_file(EXCLUDE_PUBLIC_IP_URL, is_domain=False)
+        local_ips = load_rules_data("EXCLUDE_LOCAL_IP", EXCLUDE_LOCAL_IP_URL, is_domain=False)
+        exclude_public_ips = load_rules_data("EXCLUDE_PUBLIC_IP", EXCLUDE_PUBLIC_IP_URL, is_domain=False)
 
         print(f"   └─ 已获取本地 IP 段: {len(local_ips)} 条")
         print(f"   └─ 已获取排除域名: {len(exclude_domains_raw)} 个")
@@ -251,7 +280,7 @@ def sync_local_domain_fallback(exclude_domains_raw):
 
     # 1. 首先加载高优先级的本地默认回退文件 fallback_local.txt
     print("📡 正在拉取高优先级 [fallback_local.txt] 默认本地回退规则...")
-    local_fallback_raw = load_remote_file(FALLBACK_LOCAL_URL, is_domain=False)
+    local_fallback_raw = load_rules_data("FALLBACK_LOCAL", FALLBACK_LOCAL_URL, is_domain=False)
 
     for raw in local_fallback_raw:
         # 该文件可能包含原版自定义配置，同样支持“值,描述”或“值”，但不对其进行根域名精简切碎
