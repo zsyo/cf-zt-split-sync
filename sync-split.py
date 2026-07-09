@@ -291,7 +291,7 @@ def sync_local_domain_fallback(exclude_domains_raw):
             seen_suffixes.add(suffix_val)
             fallback_payload.append({
                 "suffix": suffix_val,
-                "dns_server": [FALLBACK_DNS],
+                # "dns_server": [FALLBACK_DNS], # 针对本地默认规则不应该指定DNS
                 "description": desc_val
             })
 
