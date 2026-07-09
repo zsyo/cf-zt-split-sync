@@ -1,0 +1,18 @@
+# =========================================================
+# Cloudflare Zero Trust 默认本地回退规则
+# =========================================================
+
+corp
+domain
+home
+home.arpa
+host
+internal
+intranet
+invalid
+lan
+local
+localdomain
+localhost
+private
+test

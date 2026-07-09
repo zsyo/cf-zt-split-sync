@@ -9,6 +9,9 @@ PROFILE_IDS  = [pid.strip() for pid in os.getenv("CF_PROFILE_ID", "").split(",")
 MODE         = os.getenv("MODE", "include")  # 支持设定为 include 或 exclude
 ALLOWED_MODES = {"exclude", "include"}
 
+# 新增：本地域名回退默认 DNS
+FALLBACK_DNS = os.getenv("FALLBACK_DNS", "119.29.29.29").strip()
+
 if not all([CF_API_TOKEN, ACCOUNT_ID]):
     raise ValueError("缺少环境变量！请设置 CF_API_TOKEN 和 CF_ACCOUNT_ID")
 
@@ -34,6 +37,9 @@ EXCLUDE_DOMAIN_URL     = "https://raw.githubusercontent.com/zsyo/cf-zt-split-syn
 # 3. 排除 IP 段（国内直连公网 IP 段段，如 GeoIP 提取的段）
 EXCLUDE_PUBLIC_IP_URL   = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/exclude_ips.txt"
 
+# 新增：CF 默认本地回退规则（高优先级）
+FALLBACK_LOCAL_URL      = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/fallback_local.txt"
+
 
 def load_remote_file(url, is_domain=False):
     """通用远程文件加载，支持过滤注释、空行和去重"""
@@ -55,6 +61,32 @@ def load_remote_file(url, is_domain=False):
             line = line.lstrip('.')  # 去除可能误写的前导点
         results.append(line)
     return list(set(results))
+
+
+def extract_root_domain_with_desc(raw_line, default_tag):
+    """
+    清洗并提取纯净根域名，同时保留原始行的自定义描述。
+    返回: (纯根域名, 干净的描述)
+    """
+    # 1. 拆分描述
+    if "," in raw_line:
+        raw_domain, custom_desc = raw_line.split(",", 1)
+        raw_domain = raw_domain.strip()
+        desc = custom_desc.strip()
+    else:
+        raw_domain = raw_line.strip()
+        desc = f"{default_tag} for {raw_domain}"
+
+    # 2. 剥离通配符和前导点
+    raw_domain = raw_domain.lstrip("*.").strip()
+
+    # 3. 提取根域名
+    parts = raw_domain.split('.')
+    if len(parts) > 2:
+        if parts[-2] in ["com", "net", "org", "gov", "edu"] and parts[-1] == "cn":
+            return ".".join(parts[-3:]), desc
+        return ".".join(parts[-2:]), desc
+    return raw_domain, desc
 
 
 def build_domain_entries(domains, description_tag):
@@ -117,6 +149,10 @@ def sync_to_cloudflare():
     print(f"🔄 当前运行模式 Mode: [{MODE}]")
     final_routes = []
 
+    # 无论何种模式，都读取排除列表用于回退配置
+    print("📡 正在拉取 [exclude_domains.txt] 用于生成本地域名回退...")
+    exclude_domains_raw = load_remote_file(EXCLUDE_DOMAIN_URL, is_domain=True)
+
     # ----------------- 逻辑分流：Include 模式 -----------------
     if MODE == "include":
         print("📡 开始拉取 [Include 模式] 对应的自用代理源...")
@@ -135,11 +171,10 @@ def sync_to_cloudflare():
     elif MODE == "exclude":
         print("📡 开始拉取 [Exclude 模式] 对应的自用排除源...")
         local_ips = load_remote_file(EXCLUDE_LOCAL_IP_URL, is_domain=False)
-        exclude_domains = load_remote_file(EXCLUDE_DOMAIN_URL, is_domain=True)
         exclude_public_ips = load_remote_file(EXCLUDE_PUBLIC_IP_URL, is_domain=False)
 
         print(f"   └─ 已获取本地 IP 段: {len(local_ips)} 条")
-        print(f"   └─ 已获取排除域名: {len(exclude_domains)} 个")
+        print(f"   └─ 已获取排除域名: {len(exclude_domains_raw)} 个")
         print(f"   └─ 已获取排除公网 IP 段: {len(exclude_public_ips)} 条")
 
         # 按顺序组装：本地 IP -> 排除域名（双通配）-> 排除公网 IP
@@ -147,7 +182,7 @@ def sync_to_cloudflare():
             ip, desc = _parse_entry(raw, "Local IP Block")
             final_routes.append({"address": ip, "description": desc})
 
-        final_routes.extend(build_domain_entries(exclude_domains, "Exclude Domain"))
+        final_routes.extend(build_domain_entries(exclude_domains_raw, "Exclude Domain"))
 
         for raw in exclude_public_ips:
             ip, desc = _parse_entry(raw, "Exclude Public IP")
@@ -173,6 +208,9 @@ def sync_to_cloudflare():
         final_routes = final_routes[:4000]
 
     execute_upload(final_routes)
+
+    # ----------------- 🌟 同步 Local Domain Fallback -----------------
+    sync_local_domain_fallback(exclude_domains_raw)
 
 
 def execute_upload(routes):
@@ -200,6 +238,72 @@ def execute_upload(routes):
         else:
             print(f"   ❌ 策略 {pid} 失败 {resp.status_code}: {resp.text.strip()}")
             resp.raise_for_status()
+
+
+def sync_local_domain_fallback(exclude_domains_raw):
+    """
+    合并 fallback_local.txt 与精简后的根域名，并上传至 Fallback 策略中。
+    """
+    print(f"⚙️  开始处理域名回退（Fallback），指定上游 DNS: [{FALLBACK_DNS}]")
+
+    fallback_payload = []
+    seen_suffixes = set()
+
+    # 1. 首先加载高优先级的本地默认回退文件 fallback_local.txt
+    print("📡 正在拉取高优先级 [fallback_local.txt] 默认本地回退规则...")
+    local_fallback_raw = load_remote_file(FALLBACK_LOCAL_URL, is_domain=False)
+
+    for raw in local_fallback_raw:
+        # 该文件可能包含原版自定义配置，同样支持“值,描述”或“值”，但不对其进行根域名精简切碎
+        suffix_val, desc_val = _parse_entry(raw, "Default Local Fallback")
+        suffix_val = suffix_val.lstrip('.').strip()
+
+        if suffix_val and suffix_val not in seen_suffixes:
+            seen_suffixes.add(suffix_val)
+            fallback_payload.append({
+                "suffix": suffix_val,
+                "dns_servers": [FALLBACK_DNS],
+                "description": desc_val
+            })
+
+    print(f"   └─ 已载入置顶核心回退规则: {len(fallback_payload)} 条")
+
+    # 2. 清洗并追加 exclude_domains.txt 中的根域名（低优先级，不覆盖高优先级的定义）
+    domain_fallback_count = 0
+    for raw in exclude_domains_raw:
+        root_domain, custom_desc = extract_root_domain_with_desc(raw, "Local Fallback")
+
+        if root_domain and root_domain not in seen_suffixes:
+            seen_suffixes.add(root_domain)
+            fallback_payload.append({
+                "suffix": root_domain,
+                "dns_servers": [FALLBACK_DNS],
+                "description": custom_desc  # 完美保留原先规则中逗号后的描述
+            })
+            domain_fallback_count += 1
+
+    print(f"   └─ 已追加清洗后的独立排除主域: {domain_fallback_count} 个")
+    print(f"📊 最终组装的 Fallback 规则总计: {len(fallback_payload)} 条")
+
+    # 3. 通过 API 执行全量覆盖同步
+    if not PROFILE_IDS:
+        url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/devices/policy/fallback"
+        print("🚀 正在上传 Fallback 规则至 Cloudflare (默认策略)...")
+        resp = requests.put(url, json=fallback_payload, headers=HEADERS)
+        if resp.status_code in (200, 204):
+            print("✅ 本地域名回退 (Fallback) 全量同步成功！")
+        else:
+            print(f"❌ Fallback 同步失败: {resp.text}")
+    else:
+        total = len(PROFILE_IDS)
+        for idx, pid in enumerate(PROFILE_IDS, 1):
+            url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/devices/policy/{pid}/fallback"
+            print(f"🚀 [{idx}/{total}] 正在上传 Fallback 规则至 Cloudflare (策略 ID: {pid})...")
+            resp = requests.put(url, json=fallback_payload, headers=HEADERS)
+            if resp.status_code in (200, 204):
+                print(f"   ✅ 策略 {pid} Fallback 同步成功！")
+            else:
+                print(f"   ❌ 策略 {pid} Fallback 失败: {resp.text}")
 
 
 if __name__ == "__main__":
