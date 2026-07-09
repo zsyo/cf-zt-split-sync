@@ -167,6 +167,21 @@ weiyun.com,Tencent WeiYun
 ctyun.cn,China Telecom CTCloud Core (天翼云核心)
 189.cn,China Telecom 189 Portal (天翼云盘业务)
 
+# Steam 游戏下载核心内容域名（走国内 CDN 矩阵）
+steamcontent.com,Steam游戏下载内容
+steampowered.com.edgesuite.net,Steam高防高可用边缘网络
+
+# Steam 客户端更新与底层分发（防启动卡检查更新）
+steamusercontent.com,Steam用户内容分发
+steamclient.com,Steam客户端分发
+
+# Steam 云存档、截图与用户资产核心域名（DNS留空，直连国内节点）
+cloud.steamusercontent.com,Steam云存档与截图
+steamusercontent.com,Steam用户数据根域
+
+# Steam 客户端底层核心 API 交互（防止客户端登录或同步时转圈）
+api.steampowered.com,Steam核心API服务
+
 # ---- 自用论坛社区 ----
 binmt.cc,MT论坛
 pcbeta.com,远景论坛

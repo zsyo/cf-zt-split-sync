@@ -108,8 +108,8 @@ netflix.com,Netflix Video
 nflxvideo.net,Netflix CDN
 disneyplus.com,Disney Plus
 spotify.com,Spotify Music
-#steamcommunity.com,Steam Community
-#steampowered.com,Steam Store
+steamcommunity.com,Steam Community
+store.steampowered.com,Steam Store
 
 # ---- 境外常用网盘与云存储 ----
 mega.nz,MEGA Cloud Storage
@@ -133,8 +133,8 @@ vimeo.com,Vimeo Premium Video Platform
 vimeocdn.com,Vimeo Video CDN
 
 # ---- 游戏社区配套境外服务（小黑盒/Steam 数据交互） ----
-#steam-chat.com,Steam Chat Service
-#steamstatic.com,Steam Static Content
+steam-chat.com,Steam Chat Service
+steamstatic.com,Steam Static Content
 #steamusercontent.com,Steam User Images
 mod.io,Mod.io Game Mods
 modcdn.io,Mod.io CDN Assets
