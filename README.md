@@ -27,7 +27,7 @@
 │  本地文件不存在时自动降级为远程拉取                                │
 └──────────────────────────────────────────────────────────────────┘
         ↓
-rules/proxy_domains.txt / rules/proxy_ips.txt    rules/local_ips.txt / rules/exclude_domains.txt / rules/exclude_ips.txt
+rules/proxy_domains.txt / rules/proxy_ips.txt    rules/local_ips.txt / rules/exclude_private.txt / rules/exclude_domains.txt / rules/exclude_ips.txt
         ↓ Include 模式                              ↓ Exclude 模式
                         ↓ 加载规则文件 → 组装路由规则 ↓
                       sync-split.py
@@ -39,13 +39,14 @@ rules/proxy_domains.txt / rules/proxy_ips.txt    rules/local_ips.txt / rules/exc
          Exclude: 指定服务直连，其余走 WARP
 
                         ↓ 并行流程：本地域名回退同步 ↓
-              rules/fallback_local.txt（高优先级）
-              + rules/exclude_domains.txt（精简根域名）
+              rules/fallback_local.txt（优先级 1，DNS 留空）
+              + rules/exclude_private.txt（优先级 2，DNS 留空）
+              + rules/exclude_domains.txt（优先级 3，强制指定 DNS）
                         ↓ 合并去重
                         ↓ Cloudflare Zero Trust API（PUT）
               设备策略 Local Domain Fallback 规则
                         ↓
-         排除域名使用指定 DNS（FALLBACK_DNS）解析，避免 CF DNS 减速
+         私密/本地回退域名由 WARP 自行解析，公共排除域名使用 FALLBACK_DNS 解析
 ```
 
 ### 两种模式对比
@@ -83,7 +84,8 @@ rules/proxy_domains.txt / rules/proxy_ips.txt    rules/local_ips.txt / rules/exc
 |------|------|----------|
 | `rules/proxy_domains.txt` | 需要走代理的域名 | `include` |
 | `rules/proxy_ips.txt` | 需要走代理的 IP 段 | `include` |
-| `rules/exclude_domains.txt` | 需要直连的域名 | `exclude` |
+| `rules/exclude_domains.txt` | 需要直连的公共域名 | `exclude` |
+| `rules/exclude_private.txt` | 需要直连的私密域名（个人/公司内部域名，不提交到仓库） | `exclude` / 本地回退规则 |
 | `rules/exclude_ips.txt` | 需要直连的公网 IP 段 | `exclude` |
 | `rules/local_ips.txt` | 本地内网 IP 段 | `exclude` |
 | `rules/fallback_local.txt` | 高优先级本地回退域名（如 `local`、`localhost`、`internal` 等） | 通用（始终生效） |
@@ -96,18 +98,29 @@ rules/proxy_domains.txt / rules/proxy_ips.txt    rules/local_ips.txt / rules/exc
   - 示例：`google.com,Google Search` → 生成两条规则，描述分别为 "Google Search" 和 "Google Search Sub"
   - 无逗号时使用默认描述，行为不变
 
-### 3. 配置 GitHub Secrets
+### 3. 配置 GitHub Secrets 与 Variables
 
-进入仓库 **Settings → Secrets and variables → Actions**，添加以下 Secrets：
+进入仓库 **Settings → Secrets and variables → Actions**，分别添加以下 Secrets（加密变量）和 Variables（明文变量）：
+
+#### Secrets（加密变量）
 
 | Secret 名称 | 说明 | 是否必填 |
 |-------------|------|----------|
 | `CF_API_TOKEN` | Cloudflare API Token，需具备 Zero Trust 写权限 | ✅ 必填 |
 | `CF_ACCOUNT_ID` | Cloudflare 账户 ID，可在控制台右侧边栏找到 | ✅ 必填 |
 | `CF_PROFILE_ID` | 设备策略 ID，支持逗号分隔多个 ID（如 `id1,id2`），留空则使用默认策略 | ❌ 可选 |
-| `MODE` | 分流模式：`include` 或 `exclude`，默认 `include` | ❌ 可选 |
-| `USE_REMOTE_RULES` | 是否从远程 URL 拉取规则文件，默认 `false`（使用本地 `rules/` 目录） | ❌ 可选 |
-| `FALLBACK_DNS` | 本地域名回退使用的上游 DNS 服务器，默认 `119.29.29.29` | ❌ 可选 |
+| `EXCLUDE_PRIVATE_URL` | 私密排除域名的远程 URL（当 `USE_REMOTE_RULES` 为 `true` 时使用），用于加载个人/公司私密域名 | ❌ 可选 |
+| `PRIVATE_FALLBACK_LOCAL` | 私密排除域名内容（直接填写域名列表，每行一条），CI 运行时会自动写入 `rules/exclude_private.txt` | ❌ 可选 |
+
+#### Variables（明文变量）
+
+| Variable 名称 | 说明 | 默认值 |
+|---------------|------|--------|
+| `MODE` | 分流模式：`include` 或 `exclude` | `include` |
+| `USE_REMOTE_RULES` | 是否从远程 URL 拉取规则文件 | `false` |
+| `FALLBACK_DNS` | 本地域名回退使用的上游 DNS 服务器 | `119.29.29.29` |
+
+> **注意**：`MODE`、`USE_REMOTE_RULES`、`FALLBACK_DNS` 为明文 Variables（非 Secrets），因为这些值不包含敏感信息。在本地运行时仍通过环境变量设置。
 
 #### 如何获取 API Token
 
@@ -137,10 +150,10 @@ rules/proxy_domains.txt / rules/proxy_ips.txt    rules/local_ips.txt / rules/exc
 
 ### Include 模式（默认）
 
-| 文件 | 预置内容 | 条目数 |
-|------|----------|--------|
-| `rules/proxy_domains.txt` | Google、OpenAI、Anthropic、GitHub、YouTube、Discord、Docker 等常用境外服务 | ~73 个域名 |
-| `rules/proxy_ips.txt` | 暂无（可按需添加 IP 段） | 0 |
+| 文件 | 预置内容 |
+|------|----------|
+| `rules/proxy_domains.txt` | Google、OpenAI、Anthropic、GitHub、YouTube、Discord、Docker 等常用境外服务 |
+| `rules/proxy_ips.txt` | Telegram、OpenAI、GitHub、Netflix、Discord、Vultr 等常用境外服务 |
 
 每个域名会自动生成两条规则：`example.com` 和 `*.example.com`，确保子域名也被正确代理。
 
@@ -151,23 +164,29 @@ rules/proxy_domains.txt / rules/proxy_ips.txt    rules/local_ips.txt / rules/exc
 | 文件 | 用途 |
 |------|------|
 | `rules/local_ips.txt` | 本地内网 IP 段（如 `192.168.0.0/16`、`10.0.0.0/8`） |
-| `rules/exclude_domains.txt` | 需要直连的域名（如国内网站） |
+| `rules/exclude_private.txt` | 私密排除域名（个人/公司内部域名，通过 `PRIVATE_FALLBACK_LOCAL` Secret 注入，不提交到仓库） |
+| `rules/exclude_domains.txt` | 公共排除域名（如国内网站） |
 | `rules/exclude_ips.txt` | 需要直连的公网 IP 段 |
 
 ### 本地域名回退（Local Domain Fallback）
 
 无论使用哪种模式，脚本都会自动同步**本地域名回退规则**到 Cloudflare Zero Trust 的 Fallback Domains 策略。该功能解决了一个常见问题：Cloudflare DNS 解析的域名 IP 在国内访问时可能路由到速度缓慢的节点。
 
-**工作原理**：
-1. 首先加载 `rules/fallback_local.txt` 中的高优先级回退域名
-2. 然后将 `rules/exclude_domains.txt` 中的域名精简为根域名后追加（低优先级，不覆盖前者）
-3. 合并去重后，通过 API 全量覆盖 Fallback Domains 策略
-4. 所有回退域名使用 `FALLBACK_DNS` 指定的上游 DNS 服务器进行解析
+**三级优先级工作原理**：
+
+| 优先级 | 数据来源 | DNS 行为 | 说明 |
+|--------|----------|----------|------|
+| 1（最高） | `rules/fallback_local.txt` | **留空**（WARP 自行解析） | 本地保留域名（如 `local`、`localhost`、`corp`、`internal` 等），不应被公共 DNS 解析 |
+| 2 | `rules/exclude_private.txt` | **留空**（WARP 自行解析） | 个人/公司私密域名，保护隐私，不暴露给公共 DNS |
+| 3（最低） | `rules/exclude_domains.txt` | **强制指定** `FALLBACK_DNS` | 公共排除域名（如国内网站），使用国内 DNS 解析以获得更快访问速度 |
+
+合并去重时，高优先级规则优先保留，不会被低优先级规则覆盖。
 
 | 文件 | 用途 | 优先级 |
 |------|------|--------|
-| `rules/fallback_local.txt` | 高优先级回退域名（如 `local`、`localhost`、`corp`、`internal` 等保留域名） | 高 |
-| `rules/exclude_domains.txt` | 排除域名自动精简为根域名后作为补充回退规则 | 低 |
+| `rules/fallback_local.txt` | 高优先级回退域名（如 `local`、`localhost`、`corp`、`internal` 等保留域名） | 1（最高） |
+| `rules/exclude_private.txt` | 私密回退域名（通过 `PRIVATE_FALLBACK_LOCAL` Secret 注入，保护隐私不提交） | 2 |
+| `rules/exclude_domains.txt` | 公共排除域名，自动精简为根域名后作为补充回退规则 | 3（最低） |
 
 ---
 
@@ -196,6 +215,7 @@ export CF_PROFILE_ID=""         # 留空使用默认策略，多个 ID 用逗号
 export MODE="include"           # include 或 exclude
 export USE_REMOTE_RULES="false" # 默认 false：使用本地 rules/ 目录；true：从远程 URL 拉取
 export FALLBACK_DNS="119.29.29.29"  # 本地域名回退使用的上游 DNS
+export EXCLUDE_PRIVATE_URL=""   # 可选：私密排除域名的远程 URL，仅在 USE_REMOTE_RULES=true 时使用
 
 # 运行脚本
 python sync-split.py
@@ -205,7 +225,9 @@ python sync-split.py
 
 ```
 🔄 当前运行模式 Mode: [include] | 使用远程规则: [False]
+📡 正在拉取 [exclude_domains.txt] 用于生成本地域名回退...
 📖 [本地读取] 正在加载: rules/exclude_domains.txt
+📖 [本地读取] 正在加载: rules/exclude_private.txt
 📡 开始拉取 [Include 模式] 对应的自用代理源...
 📖 [本地读取] 正在加载: rules/proxy_domains.txt
 📖 [本地读取] 正在加载: rules/proxy_ips.txt
@@ -216,9 +238,10 @@ python sync-split.py
 ✅ 同步成功！默认策略已完全覆盖。
 ⚙️  开始处理域名回退（Fallback），指定上游 DNS: [119.29.29.29]
 📡 正在拉取高优先级 [fallback_local.txt] 默认本地回退规则...
-   └─ 已载入置顶核心回退规则: 18 条
-   └─ 已追加清洗后的独立排除主域: 50 个
-📊 最终组装的 Fallback 规则总计: 68 条
+   └─ [优先级1] 已载入原生本地回退规则（DNS留空）: 18 条
+   └─ [优先级2] 已载入私密回退规则（DNS留空）: 3 条
+   └─ [优先级3] 已追加公共直连回退规则（强指 DNS）: 50 个
+📊 最终组装的 Fallback 规则总计: 71 条
 🚀 正在上传 Fallback 规则至 Cloudflare (默认策略)...
 ✅ 本地域名回退 (Fallback) 全量同步成功！
 ```
@@ -254,7 +277,13 @@ python sync-split.py
 A：不需要，Cloudflare Zero Trust 策略更新后会自动下发到已连接的 WARP 客户端。
 
 **Q：本地域名回退（Fallback Domains）是什么？**  
-A：当 WARP 客户端需要解析域名时，默认使用 Cloudflare 的 DNS。但某些域名（尤其是国内网站）经 CF DNS 解析后可能路由到访问缓慢的 IP。Fallback Domains 策略让指定域名改用 `FALLBACK_DNS`（默认 `119.29.29.29`）进行解析，从而获得更快的访问速度。脚本会自动将 `fallback_local.txt` 和 `exclude_domains.txt` 中的域名同步到该策略。
+A：当 WARP 客户端需要解析域名时，默认使用 Cloudflare 的 DNS。但某些域名（尤其是国内网站）经 CF DNS 解析后可能路由到访问缓慢的 IP。Fallback Domains 策略支持三级优先级：
+- 优先级 1（`fallback_local.txt`）：本地保留域名，DNS 留空由 WARP 自行解析
+- 优先级 2（`exclude_private.txt`）：个人/公司私密域名，DNS 留空保护隐私
+- 优先级 3（`exclude_domains.txt`）：公共排除域名，强制使用 `FALLBACK_DNS`（默认 `119.29.29.29`）解析以获得更快的访问速度
+
+**Q：如何添加私密排除域名（不提交到公开仓库）？**  
+A：在 GitHub Secrets 中设置 `PRIVATE_FALLBACK_LOCAL`，内容为每行一条的域名列表（支持 `域名,描述` 格式）。CI 运行时脚本会自动将其注入到 `rules/exclude_private.txt`。本地运行时直接编辑 `rules/exclude_private.txt` 即可。私密域名的 Fallback DNS 留空，不会泄露给公共 DNS 服务器。
 
 **Q：`USE_REMOTE_RULES` 什么时候应该设为 `true`？**  
 A：当你想使用上游仓库或其他远程源的规则文件而非本地 `rules/` 目录中的文件时。默认为 `false`，即优先读取本地文件。若本地文件不存在，脚本会自动降级为远程拉取。

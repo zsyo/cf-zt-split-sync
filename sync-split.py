@@ -27,7 +27,8 @@ HEADERS = {
 LOCAL_FILES = {
     "PROXY_DOMAIN": "proxy_domains.txt", # 代理域名列表
     "PROXY_IP": "proxy_ips.txt", # 代理 IP 列表
-    "EXCLUDE_LOCAL_IP": "local_ips.txt", # 本地 IP 段列表（如 192.168.0.0/16 等）
+    "EXCLUDE_LOCAL_IP": "local_ips.txt", # 本地 IP 段列表（如 192.168.0.0/16 等, 最高优先级）
+    "EXCLUDE_PRIVATE": "exclude_private.txt", # 私密排除域名列表（个人/公司私密域名, 次高优先级）
     "EXCLUDE_DOMAIN": "exclude_domains.txt", # 排除域名列表（国内直连域名，如 baidu.com 等）
     "EXCLUDE_PUBLIC_IP": "exclude_ips.txt", # 排除公网 IP 段列表（国内直连公网 IP 段段，如 GeoIP 提取的段）
     "FALLBACK_LOCAL": "fallback_local.txt" # 本地回退规则
@@ -36,7 +37,8 @@ LOCAL_FILES = {
 # ----------------- 📡 远程数据源配置 -----------------
 PROXY_DOMAIN_URL        = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/proxy_domains.txt"  # 代理域名列表
 PROXY_IP_URL            = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/proxy_ips.txt"  # 代理 IP 列表
-EXCLUDE_LOCAL_IP_URL    = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/local_ips.txt"  # 本地 IP 段列表（如 192.168.0.0/16 等）
+EXCLUDE_LOCAL_IP_URL    = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/local_ips.txt"  # 本地 IP 段列表（如 192.168.0.0/16 等, 最高优先级）
+EXCLUDE_PRIVATE_URL     = os.getenv("EXCLUDE_PRIVATE_URL")  # 私密排除域名列表（个人/公司私密域名, 次高优先级）
 EXCLUDE_DOMAIN_URL      = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/exclude_domains.txt"  # 排除域名列表（国内直连域名，如 baidu.com 等）
 EXCLUDE_PUBLIC_IP_URL   = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/exclude_ips.txt"  # 排除公网 IP 段列表（国内直连公网 IP 段段，如 GeoIP 提取的段）
 FALLBACK_LOCAL_URL      = "https://raw.githubusercontent.com/zsyo/cf-zt-split-sync/main/rules/fallback_local.txt"  # 本地回退规则
@@ -180,9 +182,10 @@ def sync_to_cloudflare():
     print(f"🔄 当前运行模式 Mode: [{MODE}] | 使用远程规则: [{USE_REMOTE_RULES}]")
     final_routes = []
 
-    # 无论何种模式，都读取排除列表用于回退配置
+    # 预加载公共排除域名与私密排除域名
     print("📡 正在拉取 [exclude_domains.txt] 用于生成本地域名回退...")
     exclude_domains_raw = load_rules_data("EXCLUDE_DOMAIN", EXCLUDE_DOMAIN_URL, is_domain=True)
+    exclude_private_raw = load_rules_data("EXCLUDE_PRIVATE", EXCLUDE_PRIVATE_URL, is_domain=True)
 
     # ----------------- 逻辑分流：Include 模式 -----------------
     if MODE == "include":
@@ -203,7 +206,8 @@ def sync_to_cloudflare():
         exclude_public_ips = load_rules_data("EXCLUDE_PUBLIC_IP", EXCLUDE_PUBLIC_IP_URL, is_domain=False)
 
         print(f"   └─ 已获取本地 IP 段: {len(local_ips)} 条")
-        print(f"   └─ 已获取排除域名: {len(exclude_domains_raw)} 个")
+        print(f"   └─ 已获取私密排除域名: {len(exclude_private_raw)} 个")
+        print(f"   └─ 已获取公共排除域名: {len(exclude_domains_raw)} 个")
         print(f"   └─ 已获取排除公网 IP 段: {len(exclude_public_ips)} 条")
 
         # 按顺序组装：本地 IP -> 排除域名（双通配）-> 排除公网 IP
@@ -211,6 +215,8 @@ def sync_to_cloudflare():
             ip, desc = _parse_entry(raw, "Local IP Block")
             final_routes.append({"address": ip, "description": desc})
 
+        # 先注入私密排除域名，确保其排在公共域名之上
+        final_routes.extend(build_domain_entries(exclude_private_raw, "Private Exclude Domain"))
         final_routes.extend(build_domain_entries(exclude_domains_raw, "Exclude Domain"))
 
         for raw in exclude_public_ips:
@@ -238,8 +244,8 @@ def sync_to_cloudflare():
 
     execute_upload(final_routes)
 
-    # ----------------- 🌟 同步 Local Domain Fallback -----------------
-    sync_local_domain_fallback(exclude_domains_raw)
+    # ----------------- 🌟 同步本地域名回退并合并私密文件 -----------------
+    sync_local_domain_fallback(exclude_private_raw, exclude_domains_raw)
 
 
 def execute_upload(routes):
@@ -269,9 +275,12 @@ def execute_upload(routes):
             resp.raise_for_status()
 
 
-def sync_local_domain_fallback(exclude_domains_raw):
+def sync_local_domain_fallback(exclude_private_raw, exclude_domains_raw):
     """
-    合并 fallback_local.txt 与精简后的根域名，并上传至 Fallback 策略中。
+    按照优先级合并 Fallback 规则：
+        1. fallback_local.txt (最高优先级，DNS留空)
+        2. exclude_private.txt (高优先级私密直连，DNS留空)
+        3. exclude_domains.txt (普通公共直连，DNS强制指定为 FALLBACK_DNS)
     """
     print(f"⚙️  开始处理域名回退（Fallback），指定上游 DNS: [{FALLBACK_DNS}]")
 
@@ -282,6 +291,7 @@ def sync_local_domain_fallback(exclude_domains_raw):
     print("📡 正在拉取高优先级 [fallback_local.txt] 默认本地回退规则...")
     local_fallback_raw = load_rules_data("FALLBACK_LOCAL", FALLBACK_LOCAL_URL, is_domain=False)
 
+    # 1. 组装最高优先级：fallback_local.txt (DNS留空)
     for raw in local_fallback_raw:
         # 该文件可能包含原版自定义配置，同样支持“值,描述”或“值”，但不对其进行根域名精简切碎
         suffix_val, desc_val = _parse_entry(raw, "Default Local Fallback")
@@ -291,27 +301,39 @@ def sync_local_domain_fallback(exclude_domains_raw):
             seen_suffixes.add(suffix_val)
             fallback_payload.append({
                 "suffix": suffix_val,
-                # "dns_server": [FALLBACK_DNS], # 针对本地默认规则不应该指定DNS
                 "description": desc_val
             })
+    print(f"   └─ [优先级1] 已载入原生本地回退规则（DNS留空）: {len(fallback_payload)} 条")
 
-    print(f"   └─ 已载入置顶核心回退规则: {len(fallback_payload)} 条")
+    # 2. 组装第二优先级：exclude_private.txt 中的私密规则 (DNS同样留空)
+    private_fallback_count = 0
+    for raw in exclude_private_raw:
+        root_domain, custom_desc = extract_root_domain_with_desc(raw, "Private Local Fallback")
 
-    # 2. 清洗并追加 exclude_domains.txt 中的根域名（低优先级，不覆盖高优先级的定义）
-    domain_fallback_count = 0
+        if root_domain and root_domain not in seen_suffixes:
+            seen_suffixes.add(root_domain)
+            fallback_payload.append({
+                "suffix": root_domain,
+                "description": custom_desc
+            })
+            private_fallback_count += 1
+    print(f"   └─ [优先级2] 已载入私密回退规则（DNS留空）: {private_fallback_count} 条")
+
+    # 3. 组装第三优先级：exclude_domains.txt 中的公共域名 (强制指定分流 DNS)
+    public_fallback_count = 0
     for raw in exclude_domains_raw:
-        root_domain, custom_desc = extract_root_domain_with_desc(raw, "Local Fallback")
+        root_domain, custom_desc = extract_root_domain_with_desc(raw, "Public Local Fallback")
 
         if root_domain and root_domain not in seen_suffixes:
             seen_suffixes.add(root_domain)
             fallback_payload.append({
                 "suffix": root_domain,
                 "dns_server": [FALLBACK_DNS],
-                "description": custom_desc  # 完美保留原先规则中逗号后的描述
+                "description": custom_desc
             })
-            domain_fallback_count += 1
+            public_fallback_count += 1
 
-    print(f"   └─ 已追加清洗后的独立排除主域: {domain_fallback_count} 个")
+    print(f"   └─ [优先级3] 已追加公共直连回退规则（强指 DNS）: {public_fallback_count} 个")
     print(f"📊 最终组装的 Fallback 规则总计: {len(fallback_payload)} 条")
 
     # 3. 通过 API 执行全量覆盖同步

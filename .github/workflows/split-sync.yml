@@ -11,20 +11,38 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - name: 签出项目代码
+        uses: actions/checkout@v5
 
-      - name: 设置 Python
+      - name: 设置 Python 环境
         uses: actions/setup-python@v6
         with:
           python-version: "3.13"
 
-      - name: 安装依赖
+      - name: 安装基础依赖
         run: pip install requests
+
+      - name: 注入私密排除域规则
+        env:
+          PRIVATE_DOMAINS: ${{ secrets.PRIVATE_FALLBACK_LOCAL }}
+        run: |
+          if [ -n "$PRIVATE_DOMAINS" ]; then
+            echo "🔐 检测到私密域名 Secret，正在生成 rules/exclude_private.txt..."
+            echo "$PRIVATE_DOMAINS" > rules/exclude_private.txt
+            echo "✅ 私密排除域名文件生成成功！"
+          else
+            echo "ℹ️ 未检测到密钥，保持默认空文件状态。"
+          fi
 
       - name: 运行同步脚本
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           CF_PROFILE_ID: ${{ secrets.CF_PROFILE_ID }}
-          MODE: include # 建议配合最新脚本改为 include，或根据需要保持 exclude
+          EXCLUDE_PRIVATE_URL: ${{ secrets.EXCLUDE_PRIVATE_URL }}
+
+          # 📝 从 Variables 中读取明文开关变量（注意这里改成了 vars.）
+          MODE: ${{ vars.MODE || 'include' }}
+          USE_REMOTE_RULES: ${{ vars.USE_REMOTE_RULES || 'false' }}
+          FALLBACK_DNS: ${{ vars.FALLBACK_DNS || '119.29.29.29' }}
         run: python sync-split.py
