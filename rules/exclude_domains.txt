@@ -182,6 +182,9 @@ steamusercontent.com,Steam用户数据根域
 # Steam 客户端底层核心 API 交互（防止客户端登录或同步时转圈）
 api.steampowered.com,Steam核心API服务
 
+# 时间同步服务
+ntp.org.cn,时间同步服务 cn. edu.
+
 # ---- 自用论坛社区 ----
 binmt.cc,MT论坛
 pcbeta.com,远景论坛
