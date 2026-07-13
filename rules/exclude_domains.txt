@@ -115,6 +115,10 @@ douyin.com,Douyin Web
 amemv.com,Douyin Core API
 snssdk.com,ByteDance Shared CDN
 iesdouyin.com,Douyin Video Static
+zijieapi.com,ByteDance API
+douyinpic.com,ByteDance Shared CDN
+douyinvod.com,ByteDance Video CDN
+douyinstatic.com,ByteDance Static CDN
 
 # ---- 快手短视频平台 ----
 kuaishou.com,Kuaishou Web
