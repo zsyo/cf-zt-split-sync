@@ -190,6 +190,36 @@ rules/proxy_domains.txt / rules/proxy_ips.txt    rules/local_ips.txt / rules/exc
 
 ---
 
+## 域名抓取辅助脚本
+
+为了帮助你快速收集需要代理或排除的域名，本项目提供了一个油猴（Tampermonkey）脚本 `scripts/host_extractor.user.js`。
+
+### 功能
+
+- 在页面右下角显示一个 🎯 悬浮按钮，点击展开深色半透明浮窗
+- 自动捕获当前页面所有请求域名（包括 WebSocket 连接）
+- 支持去重、排序、带序号显示
+- 支持单项域名复制和一键全选复制
+- 复制的域名可直接粘贴到 `rules/` 目录下的规则文件中
+
+### 安装
+
+**推荐使用 [ScriptCat](https://scriptcat.org/zh-CN)**（一个专注于用户脚本的浏览器扩展，轻量且开源）：
+
+- 🐱 ScriptCat（推荐）：https://scriptcat.org/zh-CN/script-show-page/7023
+- 🐵 Greasy Fork（备用）：https://greasyfork.org/zh-CN/scripts/586870
+
+> **为什么推荐 ScriptCat？** ScriptCat 是国人开发的开源用户脚本管理器，对国内网络环境更友好，安装和更新更加顺畅。如果你已在使用 Tampermonkey 或 Violentmonkey，Greasy Fork 链接同样可用。
+
+### 使用方式
+
+1. 安装脚本管理器（ScriptCat / Tampermonkey / Violentmonkey）
+2. 通过上述安装链接安装脚本
+3. 打开目标网站，点击右下角 📋 按钮展开面板
+4. 查看捕获到的域名，点击「复制全部」或逐个复制
+5. 将域名粘贴到对应的规则文件中（如 `rules/proxy_domains.txt` 或 `rules/exclude_domains.txt`）
+
+---
 ## 规则配额说明
 
 Cloudflare Zero Trust Split Tunnels 单策略最多支持 **4000 条**规则。脚本会自动检查并截断超出部分，同时输出去重统计信息。
