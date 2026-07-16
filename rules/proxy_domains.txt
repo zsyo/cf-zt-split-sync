@@ -86,6 +86,8 @@ v2ex.com,V2EX Community
 stackoverflow.com,StackOverflow
 npmjs.com,NPM Registry
 npmjs.org,NPM Official
+greasyfork.org,GreasyFork 油猴脚本
+sleazyfork.org,SleazyFork 油猴脚本
 
 # ---- 前端开发与基建（解决 Zed/Neovim LSP 插件加载卡顿） ----
 deno.land,Deno Registry
