@@ -11,9 +11,6 @@ openai.com,OpenAI Core
 chatgpt.com,ChatGPT Web
 anthropic.com,Anthropic Core
 claude.ai,Claude AI Web
-microsoft.com,Microsoft Core
-live.com,Microsoft Live
-bing.com,Bing Search
 
 # ---- Gemini 特殊多级子服务 ----
 clients6.google.com,Gemini Deep API

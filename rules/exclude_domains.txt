@@ -13,6 +13,14 @@ taobao.com,Taobao Shopping
 tmall.com,Tmall Shopping
 jd.com,JD Ecommerce
 360.cn,Qihoo 360
+microsoft.com,Microsoft Core
+live.com,Microsoft Live
+bing.com,Bing Search
+cognitive.microsofttranslator.com,Microsoft Translator
+translate.googleapis.com,Google Translate
+translate-pa.googleapis.com,Google Translate Paid
+jnn-pa.googleapis.com,Google Translate Paid
+translate.google.com,Google Translate
 
 # ---- 社交、生活与内容平台 ----
 weibo.com,Sina Weibo
