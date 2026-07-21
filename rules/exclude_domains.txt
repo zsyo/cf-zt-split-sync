@@ -5,6 +5,9 @@
 # ---- 国内核心搜索引擎与大厂门户 ----
 baidu.com,Baidu Core
 bdstatic.com,Baidu Static
+bdimg.com,Baidu Image Resource
+bcebos.com,Baidu智能云对象存储
+cdn.bcebos.com,Baidu智能云对象存储
 qq.com,Tencent QQ
 tencent.com,Tencent Group
 alibaba.com,Alibaba Group
