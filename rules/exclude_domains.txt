@@ -206,4 +206,5 @@ pcbeta.com,远景论坛
 kanxue.com,看雪论坛
 52pojie.cn,吾爱破解论坛
 kafan.cn,卡饭论坛
+funcdn.com,卡饭论坛使用的CDN
 zntx.cc,八神智能社区
