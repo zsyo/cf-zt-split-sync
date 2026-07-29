@@ -35,6 +35,7 @@ amemv.com,TikTok/Douyin Core
 snssdk.com,ByteDance Share
 toutiao.com,Jinri Toutiao
 zhihu.com,Zhihu Community
+csslcloud.net,知乎学堂直播源
 xiaohongshu.com,Little Red Book
 meituan.com,Meituan O2O
 
