@@ -36,6 +36,8 @@ snssdk.com,ByteDance Share
 toutiao.com,Jinri Toutiao
 zhihu.com,Zhihu Community
 csslcloud.net,知乎学堂直播源
+zhimg.com,Zhihu Image CDN
+vzuu.com,Zhihu Live CDN
 xiaohongshu.com,Little Red Book
 meituan.com,Meituan O2O
 
