@@ -30,6 +30,11 @@ translate.google.com,Google Translate
 weibo.com,Sina Weibo
 sina.com.cn,Sina Portal
 bilibili.com,Bilibili Video
+bilivideo.com,Bilibili Video
+vc.bilibili.com,Bilibili Video
+live.bilibili.com,Bilibili Live
+game.bilibili.com,Bilibili Game
+mcdn.bilivideo.cn,Bilibili Video CDN
 hdslb.com,Bilibili Static
 bytedance.com,ByteDance Group
 amemv.com,TikTok/Douyin Core
