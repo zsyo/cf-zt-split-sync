@@ -9,6 +9,7 @@ bdimg.com,Baidu Image Resource
 bcebos.com,Baidu智能云对象存储
 cdn.bcebos.com,Baidu智能云对象存储
 qq.com,Tencent QQ
+wx.qq.com,WeChat Core API
 tencent.com,Tencent Group
 alibaba.com,Alibaba Group
 alicdn.com,Alibaba CDN
@@ -202,6 +203,19 @@ api.steampowered.com,Steam核心API服务
 
 # 时间同步服务
 ntp.org.cn,时间同步服务 cn. edu.
+
+# CCTV
+cctv.com, CCTV官方网站
+data.cctv.com, CCTV数据中心
+cntv.cn, CCTV新闻中心
+v.cntv.cn, CCTV视频中心
+itv.cntv.cn, CCTV电视直播
+player.cntv.cn, CCTV播放器
+apps.cntv.cn, CCTV应用
+newcomment.cntv.cn, CCTV评论
+img.cctvpic.com, CCTV图片
+bjcathay.com, CCTV Cathay
+qvb.qcloud.com, CCTV QCloud
 
 # ---- 自用论坛社区 ----
 binmt.cc,MT论坛
