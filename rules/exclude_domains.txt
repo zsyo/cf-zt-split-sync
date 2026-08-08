@@ -112,6 +112,8 @@ netease.com,NetEase Mail/Game
 163.com,NetEase Portal
 music.126.net,NetEase Cloud Music CDN
 deepin.org,Deepin Linux
+tiancity.cn,世纪天成游戏服务
+tiancity.com,世纪天成游戏服务
 
 # ---- 音频、播客与垂直视频平台 ----
 ximalaya.com,Ximalaya FM Audio (喜马拉雅)
